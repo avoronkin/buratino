@@ -6,15 +6,11 @@ define(function (require) {
     var template = require('text!./main-page.html');
 
     return PageView.extend({
-        initialize: function () {
-            console.log('init main page view');
+        toString: function(){
+            return 'MainPageView';
         },
-        pageSettings: {
-            routeLink: '',
-            routeName: 'home',
-            pageLinkText: 'Home link',
-            pageTitle: 'Home title'
-        },
+        // initialize: function () {
+        // },
         template: template
     });
 

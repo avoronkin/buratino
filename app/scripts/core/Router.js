@@ -3,79 +3,66 @@
 define(function (require) {
     var crossroads = require('crossroads');
     require('history');
-    var $ = require('jquery');
     var _ = require('underscore');
 
-    var Router = function () {
-        var routes = {};
-        var excluded = [];
+    var Router = function (opt) {
+        var self = this;
+        this._routes = {};
+        this._mediator = opt.mediator;
 
-        var start = function () {
+        this._mediator.on('page:register', function (page) {
+            self.route(page.routeName, page.routeLink, function (routeParams) {
+                page.view.routeParams = routeParams;
+                self._mediator.trigger('page:change', {
+                    view: page.view
+                });
+                self._mediator.trigger('title:change', page.title);
+
+            });
+
+        });
+    };
+
+    _.extend(Router.prototype, {
+
+        start: function () {
+            var self = this;
             crossroads.normalizeFn = crossroads.NORM_AS_OBJECT;
-            //crossroads.routed.add(console.log, console);
-            crossroads.parse(_getStatePath());
+            crossroads.parse(this._getStatePath());
 
             History.Adapter.bind(window, 'statechange', function () {
-                //console.log('statechange',_getStatePath())
-                crossroads.parse(_getStatePath());
+                crossroads.parse(self._getStatePath());
             });
 
-            $('body').on('click', 'a[href^="/"]', function (event) {
-                if (!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+            this._mediator.trigger('router:start');
+        },
 
-                    var path = $(event.currentTarget).attr('href'); //.replace(/^\//, "");
+        route: function (name, pattern, handler, priority) {
+            this._routes[name] = this._routes[name] || {};
+            this._routes[name] = crossroads.addRoute(pattern, handler, priority);
+            return this._routes[name];
+        },
 
-                    if (!_.contains(excluded, path)) {
-                        //console.log('clicked', path);
-                        event.preventDefault();
-                        goToUrl(path);
-                    }
-
-                }
-            });
-
-        };
-
-        var exclude = function (path) {
-            excluded.push(path);
-        };
-
-        var route = function (name, pattern, handler, priority) {
-            routes[name] = routes[name] || {};
-            routes[name] = crossroads.addRoute(pattern, handler, priority);
-            return routes[name];
-        };
-
-        var _getStatePath = function () {
+        _getStatePath: function () {
             var State = History.getState();
-            var path = State.url.replace(location.origin, '');//+ '/'
-            //console.log('state', path, State)
+            var path = State.url.replace(location.origin, '');
             return path;
-        };
+        },
 
-        var url = function (name, replacements) {
-            return '/' + routes[name].interpolate(replacements);
-        };
+        url: function (name, replacements) {
+            return '/' + this._routes[name].interpolate(replacements);
+        },
 
-        var navigate = function (name, replacements) {
-            var path = url(name, replacements);
-            goToUrl(path);
-            //History.pushState(null, null, path);
-        };
+        navigate: function (name, replacements) {
+            var path = this.url(name, replacements);
+            this.goToUrl(path);
+        },
 
-        var goToUrl = function (path) {
+        goToUrl: function (path) {
             History.pushState(null, null, path);
-        };
+        }
 
-
-        return {
-            start: start,
-            route: route,
-            navigate: navigate,
-            url: url,
-            exclude: exclude
-        };
-    };
+    });
 
 
     return Router;
