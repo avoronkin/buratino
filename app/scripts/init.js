@@ -2,70 +2,50 @@
 
 define(function (require) {
     //var Backbone = require('backbone');
+    var Structure = require('core/Structure');
     var Router = require('core/Router');
-    var MainApp = require('mainApp/index');
+    var mainApp = require('mainApp/index');
+    var TopMenu = require('core/MenuView');
     var mediator = require('./core/mediator');
-    var router = new Router({
-        mediator: mediator
-    });
     var RegionManager = require('./core/RegionManager');
 
+    var router = new Router();
+    var structure = new Structure();
+
     var regionManager = new RegionManager();
+
     var mainRegion = regionManager.addRegion('main', '#main');
 
+    var topMenuRegion = regionManager.addRegion('top-menu', '#top-menu');
+    var topMenu = new TopMenu({
+        collection: structure,
+        itemsContainerSelector: '.items'
+    });
+
     mediator.on('page:change', function (opt) {
-        console.log('page:change', opt);
         mainRegion.show(opt.view);
     }, this);
 
     mediator.on('title:change', function (title) {
-        console.log('title:change', title);
-        $('title').text(title);
+        $('title')
+            .text(title);
     });
 
-    mediator.on('router:start',function(){
-        $('body').on('click', 'a[href^="/"]', function (event) {
-            if (!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
-                var path = $(event.currentTarget).attr('href');
-                event.preventDefault();
-                router.goToUrl(path);
-            }
-        });
+    mediator.on('router:start', function () {
+        $('body')
+            .on('click', 'a[href^="/"]', function (event) {
+                if (!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+                    var path = $(event.currentTarget)
+                        .attr('href');
+                    event.preventDefault();
+                    router.goToUrl(path);
+                }
+            });
     });
 
-    var mainApp = new MainApp({
-        router: router,
-        appUrl: '',
-        mediator: mediator
-    });
 
-    var MainPageView = require('mainApp/pages/MainPageView');
-    var mainPageView = new MainPageView({
-        mediator: mediator
-    });
-
-    var TestPageView = require('mainApp/pages/TestPageView');
-    var testPageView = new TestPageView({
-        mediator: mediator
-    });
-
-    mainApp.addPage({
-        view: testPageView,
-        routeLink: '/test',
-        routeName: 'test',
-        linkText: 'Test link',
-        title: 'Test title'
-    });
-    mainApp.addPage({
-        view: mainPageView,
-        routeLink: '',
-        routeName: 'home',
-        linkText: 'Home link',
-        title: 'Home title'
- 
-    });
     mainApp.start();
-
+    topMenuRegion.show(topMenu);
 
     router.start();
 });

@@ -3,10 +3,13 @@
 define(function (require) {
     var Backbone = require('backbone');
     var _ = require('underscore');
+    var mediator = require('./mediator');
 
     var BaseView = Backbone.View.extend({
         constructor: function () {
             this._subViews = {};
+            this.mediator = mediator;
+
             this.render = _.wrap(this.render, function (render) {
                 render.apply(this);
                 this.afterRender.apply(this);
@@ -33,16 +36,22 @@ define(function (require) {
         renderSubViews: function () {
             _.each(this._subViews, function (view, selector) {
                 if (view && selector) {
-                    view.setElement(this.$(selector)).render();
+                    view.setElement(this.$(selector))
+                        .render();
                 }
             }, this);
         },
 
         render: function () {
-            console.log('render ' + this + ' ' + this.cid);
-            this.$el.html(_.template(this.template, this.data(), {variable: 'data'}));
-            this.renderSubViews();
+            var html = this.template(this.data(), {
+                variable: 'data'
+            });
 
+            console.log('render ' + this + ' ' + this.cid, html);
+
+            this.$el.html(html);
+            this.renderSubViews();
+            this.trigger('render');
             return this;
         },
 

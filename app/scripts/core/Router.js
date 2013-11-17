@@ -4,19 +4,20 @@ define(function (require) {
     var crossroads = require('crossroads');
     require('history');
     var _ = require('underscore');
+    var mediator = require('./mediator');
 
     var Router = function (opt) {
         var self = this;
         this._routes = {};
-        this._mediator = opt.mediator;
+        this._mediator = mediator;
 
         this._mediator.on('page:register', function (page) {
-            self.route(page.routeName, page.routeLink, function (routeParams) {
-                page.view.routeParams = routeParams;
+            self.route(page.options.routeName, page.options.routeLink, function (routeParams) {
+                page.routeParams = routeParams;
                 self._mediator.trigger('page:change', {
-                    view: page.view
+                    view: page
                 });
-                self._mediator.trigger('title:change', page.title);
+                self._mediator.trigger('title:change', page.options.title);
 
             });
 

@@ -3,14 +3,13 @@
 define(function (require) {
     var _ = require('underscore');
     var Backbone = require('backbone');
+    var mediator = require('./mediator');
 
     var App = function (opt) {
         this._pages = [];
-        if(opt && opt.mediator){
-            this.setMediator(opt.mediator);
-        }
+        this._mediator = mediator;
         if(opt && (opt.appUrl||opt.appUrl==='')){
-            this._appUrl = opt.appUrl;
+            this.setAppUrl(opt.appUrl);
         }
         
         this.initialize.apply(this);
@@ -32,12 +31,15 @@ define(function (require) {
         getAppUrl: function(){
             return this._appUrl;
         },
+        setAppUrl: function(url){
+            this._appUrl = url; 
+        },
         setMediator: function(mediator){
             this._mediator = mediator;
         },
         register: function (page) {
             console.log('register', this,this.getAppUrl())
-            page.routeLink = this.getAppUrl() + page.routeLink;
+            page.options.routeLink = this.getAppUrl() + page.options.routeLink;
             this._mediator.trigger('page:register',page);
         },
         start: function () {

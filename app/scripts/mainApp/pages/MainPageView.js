@@ -3,7 +3,8 @@
 define(function (require) {
     // var shared = require('core/shared');
     var PageView = require('core/PageView');
-    var template = require('text!./main-page.html');
+    var JST = require('JST');
+    var template = JST['app/scripts/mainApp/pages/main-page.ejs'];
 
     return PageView.extend({
         toString: function(){

@@ -5,28 +5,62 @@ define(function (require) {
 
     var CollectionView = BaseView.extend({
         constructor: function (options) {
+            options = options || {};
             this._views = [];
-            if (!options || !options.ItemView) {
-                throw new Error('Where ItemView???');
-            }
-            this.ItemView = options.ItemView;
-            this.ItemViewOptions = options.ItemViewOptions ? options.ItemViewOptions : {};
+            this.setItemView(options.ItemView ? options.ItemView : BaseView);
+            this.setItemViewOptions((options.ItemViewOptions ? options.ItemViewOptions : {}));
             BaseView.apply(this, arguments);
+            this.on('render', function(){
+                this.collection.on('reset add remove', this.renderViews, this);
+            });
+
+        },
+        data: function(){
+            var data = {};
+            return data; 
+        },
+        setItemView: function (ItemView) {
+            this.ItemView = ItemView;
+        },
+        getItemView: function () {
+            return this.ItemView;
+        },
+        getItemViewOptions: function () {
+            return this.ItemViewOptions;
+        },
+        setItemViewOptions: function (ItemViewOptions) {
+            this.ItemViewOptions = ItemViewOptions;
+        },
+        render: function(){
+            BaseView.prototype.render.apply(this);
+
+            if (this.options.itemsContainerSelector) {
+                this.$itemsContainerEl = this.$(this.options.itemsContainerSelector);
+            } else {
+                this.$itemsContainerEl = this.$el;
+            }
+
+            this.renderViews();
+            return this;
         },
 
         renderViews: function () {
-            this.closeViews();
-            var container = document.createDocumentFragment();
+            var ItemView = this.getItemView();
+            var ItemViewOptions = this.getItemViewOptions();
             var view;
+            var container = document.createDocumentFragment();
+
+            this.closeViews();
+
             this.collection.each(function (model) {
-                view = new this.ItemView(_.extend(this.ItemViewOptions, {
+                view = new ItemView(_.extend(ItemViewOptions, {
                     model: model
                 }));
                 this._views.push(view);
                 container.appendChild(view.render().el);
             }, this);
 
-            this.$el.append(container);
+            this.$itemsContainerEl.append(container);
         },
 
         closeViews: function () {
@@ -34,5 +68,5 @@ define(function (require) {
         }
     });
 
-    return  CollectionView;
+    return CollectionView;
 });

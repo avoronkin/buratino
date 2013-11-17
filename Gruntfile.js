@@ -59,7 +59,7 @@ module.exports = function (grunt) {
             },
             jst: {
                 files: [
-                    '<%= yeoman.app %>/scripts/templates/*.ejs'
+                    '<%= yeoman.app %>/scripts/**/*.ejs'
                 ],
                 tasks: ['jst']
             },
@@ -276,11 +276,15 @@ module.exports = function (grunt) {
         },
         jst: {
             options: {
-                amd: true
+                amd: true,
+                prettify: true,
+                templateSettings: {
+                    variable: 'data'
+                }
             },
             compile: {
                 files: {
-                    '.tmp/scripts/templates.js': ['<%= yeoman.app %>/scripts/templates/*.ejs']
+                    '<%= yeoman.app %>/scripts/templates.js': ['<%= yeoman.app %>/scripts/**/*.ejs']
                 }
             }
         },
@@ -300,7 +304,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('createDefaultTemplate', function () {
-        grunt.file.write('.tmp/scripts/templates.js', 'this.JST = this.JST || {};');
+//        grunt.file.write('<%= yeoman.dist %>/scripts/templates.js', 'this.JST = this.JST || {};');
     });
 
     grunt.registerTask('server', function (target) {
