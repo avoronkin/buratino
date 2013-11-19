@@ -12,6 +12,9 @@ define(function (require) {
     var router = new Router();
     var structure = new Structure();
 
+    structure.on('change', function(){
+        console.log('structure change', structure) 
+    })
     var regionManager = new RegionManager();
 
     var mainRegion = regionManager.addRegion('main', '#main');
