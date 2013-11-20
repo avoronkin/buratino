@@ -161,6 +161,7 @@ module.exports = function (grunt) {
         },
         compass: {
             options: {
+                require: 'zurb-foundation',
                 sassDir: '<%= yeoman.app %>/styles',
                 cssDir: '.tmp/styles',
                 imagesDir: '<%= yeoman.app %>/images',
