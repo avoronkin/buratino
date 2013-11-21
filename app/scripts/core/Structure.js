@@ -8,7 +8,6 @@ define(function (require) {
         constructor: function () {
             this._mediator = mediator;
             this._mediator.on('page:register', function (page) {
-                console.log('structure add page', page);
                 this.add({
                     pageName: page.options.linkText,
                     pageLink: page.options.routeLink,
@@ -21,7 +20,6 @@ define(function (require) {
             Backbone.Collection.apply(this, arguments);
         },
         onPageChange: function(obj){
-            console.log('structure o page change',obj.view.options.routeName); 
             var activeItems = this.filter(function(model){
                 return model.get('active') === true; 
             })

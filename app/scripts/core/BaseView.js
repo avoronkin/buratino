@@ -47,7 +47,7 @@ define(function (require) {
                 variable: 'data'
             });
 
-            console.log('render ' + this + ' ' + this.cid, html);
+//            console.log('render ' + this + ' ' + this.cid, html);
 
             this.$el.html(html);
             this.renderSubViews();

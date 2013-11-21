@@ -35,6 +35,28 @@ define(function (require) {
     
     mainApp.addPage(testPage);
 
+    var TestSubPageView = require('mainApp/pages/TestSubPageView');
+    var testSubPage = new TestSubPageView({
+        routeLink: '/sub-test',
+        parentRouteName: 'test',
+        routeName: 'sub-test',
+        linkText: 'sub test link',
+        title: 'sub test title'
+    });
+    
+    mainApp.addPage(testSubPage);
+
+    var TestSubPage2View = require('mainApp/pages/TestSubPage2View');
+    var testSubPage2 = new TestSubPage2View({
+        routeLink: '/sub-test2',
+        parentRouteName: 'test',
+        routeName: 'sub-test2',
+        linkText: 'sub test 2 link',
+        title: 'sub test 2  title'
+    });
+    
+    mainApp.addPage(testSubPage2);
+
 
     return mainApp;
 });
