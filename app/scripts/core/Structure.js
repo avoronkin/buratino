@@ -9,9 +9,10 @@ define(function (require) {
             this._mediator = mediator;
             this._mediator.on('page:register', function (page) {
                 this.add({
-                    pageName: page.options.linkText,
-                    pageLink: page.options.routeLink,
-                    routeName: page.options.routeName,
+                    menuName: page.options.menuName,
+                    route: page.options.route,
+                    name: page.options.name,
+                    parentName: page.options.parentName,
                     active: false
                 });
             }, this);
@@ -24,7 +25,7 @@ define(function (require) {
                 return model.get('active') === true; 
             })
             var item = this.find(function(model){
-                return model.get('routeName') === obj.view.options.routeName; 
+                return model.get('name') === obj.view.options.name; 
             });
             this.invoke('set', {'active': false});
             if(item){

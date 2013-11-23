@@ -12,12 +12,12 @@ define(function (require) {
         this._mediator = mediator;
 
         this._mediator.on('page:register', function (page) {
-            self.route(page.options.routeName, page.options.routeLink, function (routeParams) {
+            self.route(page.options.name, page.options.route, function (routeParams) {
                 page.routeParams = routeParams;
                 self._mediator.trigger('page:change', {
                     view: page
                 });
-                self._mediator.trigger('title:change', page.options.title);
+                self._mediator.trigger('title:change', page.title);
 
             });
 

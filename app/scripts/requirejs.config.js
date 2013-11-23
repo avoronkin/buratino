@@ -31,11 +31,18 @@ require.config({
         lodash: '../bower_components/lodash/dist/lodash',
         underscore: 'libs/underscore.template-helpers',
         JST: 'templates',
-
+        jst: 'libs/jst',
         rivets: '../bower_components/rivets/dist/rivets',
         'rivets-backbone': '../bower_components/rivets-backbone-adapter/rivets-backbone',
         advice: '../bower_components/advice/advice',
         mediator: 'core/mediator'
+    },
+    config: {
+        jst: {
+            templateSettings: {
+                variable: 'data'
+            }
+        }
     },
     map: {
         '*': {
@@ -45,5 +52,3 @@ require.config({
         },
     }
 });
-
-

@@ -8,8 +8,8 @@ define(function (require) {
     var App = function (opt) {
         this._pages = [];
         this._mediator = mediator;
-        if (opt && (opt.appUrl || opt.appUrl === '')) {
-            this.setAppUrl(opt.appUrl);
+        if (opt && (opt.slug || opt.slug === '')) {
+            this.setAppSlug(opt.slug);
         }
 
         this.initialize.apply(this);
@@ -28,17 +28,17 @@ define(function (require) {
         addPage: function (page) {
             this._pages.push(page);
         },
-        getAppUrl: function () {
-            return this._appUrl;
+        getAppSlug: function () {
+            return this._appSlug;
         },
-        setAppUrl: function (url) {
-            this._appUrl = url;
+        setAppSlug: function (slug) {
+            this._appSlug = slug;
         },
         setMediator: function (mediator) {
             this._mediator = mediator;
         },
         register: function (page) {
-            page.options.routeLink = this.getAppUrl() + page.options.routeLink;
+            page.options.route = this.getAppSlug() + page.options.route;
             this._mediator.trigger('page:register', page);
         },
         // groupPagesByParent: function () {
@@ -69,31 +69,29 @@ define(function (require) {
         //     return tree;
 
         // },
-        calculatePageRoute: function (routeName, route) {
-            var page = this.findPageByRouteName(routeName);
-            route = page.options.routeLink + route;
-            if (page.options.parentRouteName) {
-                return this.calculatePageRoute(page.options.parentRouteName, route);
+        calculatePageRoute: function (name, route) {
+            var page = this.findPageByName(name);
+            route = page.options.slug + route;
+            if (page.options.parentName) {
+                return this.calculatePageRoute(page.options.parentName, route);
             } else {
                 return route;
             }
         },
-        findPageByRouteName: function (routeName) {
+        findPageByName: function (name) {
             var pages = this.getPages();
             var page = _.find(pages, function (page) {
-                return page.options.routeName === routeName;
+                return page.options.name === name;
             });
 
             return page;
         },
         start: function () {
-            //var grouped = this.groupPagesByParent();
-            //var tree = this.buildTree(grouped.rootLevel, grouped);
             console.log('start ' + this,this);
 
             _.each(this.getPages(), function (page) {
-                var pageRoute = this.calculatePageRoute(page.options.routeName, '');
-                page.options.routeLink = pageRoute;
+                var pageRoute = this.calculatePageRoute(page.options.name, '');
+                page.options.route = pageRoute;
                 this.register(page);
             }, this);
         }
