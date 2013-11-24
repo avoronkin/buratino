@@ -11,13 +11,10 @@ define(function (require) {
     var mediator = require('./core/mediator');
     var RegionManager = require('./core/RegionManager');
     var _ = require('underscore');
+    var helpers = require('core/templateHelpers');
 
-    _.addTemplateHelpers({
-        test: function(){
-            return 'it work!'; 
-        } 
+    _.addTemplateHelpers(helpers);
     
-    })
     var router = new Router();
     var structure = new Structure();
 

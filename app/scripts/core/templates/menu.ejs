@@ -1,8 +1,0 @@
-<section class="top-bar-section">
-<ul class="left">
-<% _.each(data.items, function(item){%>
-    <li <%if(item.active){%>class="active"<%}%>>
-        <a href="<%=item.pageLink%>"><%=item.pageName%></a>
-    </li>
-<%})%>
-</ul>

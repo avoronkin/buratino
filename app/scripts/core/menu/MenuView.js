@@ -1,8 +1,7 @@
 'use strict';
 
 define(function (require) {
-    var JST = require('JST');
-    var defaultOuterTpl = JST['app/scripts/core/menu/templates/default/outerTpl.ejs'];
+    var defaultOuterTpl = require('jst!./templates/default/outerTpl.ejs');
     var BaseView = require('core/BaseView');
     var _ = require('underscore');
 

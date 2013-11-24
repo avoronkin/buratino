@@ -30,7 +30,6 @@ require.config({
         signals: '../bower_components/js-signals/dist/signals',
         lodash: '../bower_components/lodash/dist/lodash',
         underscore: 'libs/underscore.template-helpers',
-        JST: 'templates',
         jst: 'libs/jst',
         rivets: '../bower_components/rivets/dist/rivets',
         'rivets-backbone': '../bower_components/rivets-backbone-adapter/rivets-backbone',

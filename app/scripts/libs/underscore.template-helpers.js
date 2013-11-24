@@ -4,7 +4,11 @@ define(function (require) {
     var _ = require('lodash');
 
     var originalUnderscoreTemplateFunction = _.template;
-    var templateHelpers = {};
+    var templateHelpers = {
+        help: function(){
+            return 'aaaaaaaaaaaaaa'; 
+        } 
+    };
 
     _.mixin({
         addTemplateHelpers: function (newHelpers) {
@@ -12,7 +16,7 @@ define(function (require) {
         },
 
         template: function (text, data, settings) {
-            console.log('template', arguments)
+            console.log('template helpers', arguments)
             // replace the built in _.template function with one that supports the addTemplateHelpers
             // function above. Basically the combo of the addTemplateHelpers function and this new
             // template function allows us to mix in global "helpers" to the data objects passed
@@ -30,9 +34,10 @@ define(function (require) {
 
             var template = originalUnderscoreTemplateFunction.apply(this, arguments);
 
-            var wrappedTemplate = function (data, settings) {
+            var wrappedTemplate = function (data) {
                 data = _.defaults({}, data, templateHelpers);
-                return template.call(this, data, settings);
+                console.log('wrappedTemplate', data);
+                return template.call(this, data);
             };
 
             return wrappedTemplate;

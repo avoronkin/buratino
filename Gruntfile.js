@@ -57,12 +57,6 @@ module.exports = function (grunt) {
                     'test/spec/**/*.js'
                 ]
             },
-            jst: {
-                files: [
-                    '<%= yeoman.app %>/scripts/**/*.ejs'
-                ],
-                tasks: ['jst']
-            },
             test: {
                 files: ['<%= yeoman.app %>/scripts/{,*/}*.js', 'test/spec/**/*.js'],
                 tasks: ['test']
@@ -184,9 +178,6 @@ module.exports = function (grunt) {
                     // `name` and `out` is set by grunt-usemin
                     baseUrl: '<%= yeoman.app %>/scripts',
                     optimize: 'none',
-                    paths: {
-                        'templates': '../../.tmp/scripts/templates'
-                    },
                     // TODO: Figure out how to make sourcemaps work with grunt-usemin
                     // https://github.com/yeoman/grunt-usemin/issues/30
                     //generateSourceMaps: true,
@@ -275,20 +266,6 @@ module.exports = function (grunt) {
                 rjsConfig: '<%= yeoman.app %>/scripts/main.js'
             }
         },
-        jst: {
-            options: {
-                amd: true,
-                prettify: true,
-                templateSettings: {
-                    variable: 'data'
-                }
-            },
-            compile: {
-                files: {
-                    '<%= yeoman.app %>/scripts/templates.js': ['<%= yeoman.app %>/scripts/**/*.ejs']
-                }
-            }
-        },
         rev: {
             dist: {
                 files: {
@@ -304,9 +281,6 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('createDefaultTemplate', function () {
-//        grunt.file.write('<%= yeoman.dist %>/scripts/templates.js', 'this.JST = this.JST || {};');
-    });
 
     grunt.registerTask('server', function (target) {
         if (target === 'dist') {
@@ -317,8 +291,6 @@ module.exports = function (grunt) {
             return grunt.task.run([
                 'clean:server',
                 'coffee',
-                'createDefaultTemplate',
-                'jst',
                 'compass:server',
                 'connect:test',
                 'watch:livereload'
@@ -328,8 +300,6 @@ module.exports = function (grunt) {
         grunt.task.run([
             'clean:server',
             'coffee:dist',
-            'createDefaultTemplate',
-            'jst',
             'compass:server',
             'connect:livereload',
             'open',
@@ -340,8 +310,6 @@ module.exports = function (grunt) {
     grunt.registerTask('test', [
         'clean:server',
         'coffee',
-        'createDefaultTemplate',
-        'jst',
         'compass',
         'connect:test',
         'mocha',
@@ -351,8 +319,6 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'coffee',
-        'createDefaultTemplate',
-        'jst',
         'compass:dist',
         'useminPrepare',
         'requirejs',
