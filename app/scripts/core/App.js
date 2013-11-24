@@ -7,7 +7,8 @@ define(function (require) {
 
     var App = function (opt) {
         this._pages = [];
-        this._mediator = mediator;
+        this._apps = [];
+        this.mediator = mediator;
         if (opt && (opt.slug || opt.slug === '')) {
             this.setAppSlug(opt.slug);
         }
@@ -25,6 +26,13 @@ define(function (require) {
         getPages: function () {
             return this._pages;
         },
+        addApp: function(app){
+            this._apps.push(app);
+            //app can add another app 
+        },
+        getApps: function(){
+            return this._apps;
+        },
         addPage: function (page) {
             this._pages.push(page);
         },
@@ -35,11 +43,22 @@ define(function (require) {
             this._appSlug = slug;
         },
         setMediator: function (mediator) {
-            this._mediator = mediator;
+            this.mediator = mediator;
         },
-        register: function (page) {
+        registerApp: function(app){
+        
+        },
+        registerApps: function(){},
+        registerPage: function (page) {
             page.options.route = this.getAppSlug() + page.options.route;
-            this._mediator.trigger('page:register', page);
+            this.mediator.trigger('page:register', page);
+        },
+        registerPages: function(){
+           _.each(this.getPages(), function (page) {
+                var pageRoute = this.calculatePageRoute(page.options.name, '');
+                page.options.route = pageRoute;
+                this.registerPage(page);
+            }, this);
         },
         // groupPagesByParent: function () {
         //     var pages = this.getPages();
@@ -88,12 +107,8 @@ define(function (require) {
         },
         start: function () {
             console.log('start ' + this,this);
-
-            _.each(this.getPages(), function (page) {
-                var pageRoute = this.calculatePageRoute(page.options.name, '');
-                page.options.route = pageRoute;
-                this.register(page);
-            }, this);
+            this.registerApps();
+            this.registerPages();
         }
 
     });
