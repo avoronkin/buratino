@@ -9,10 +9,10 @@ define(function (require) {
             this._mediator = mediator;
             this._mediator.on('page:register', function (page) {
                 this.add({
-                    menuName: page.options.menuName,
-                    route: page.options.route,
-                    name: page.options.name,
-                    parentName: page.options.parentName,
+                    menuName: page.menuName,
+                    route: page.route,
+                    name: page.name,
+                    parentName: page.parentName,
                     active: false
                 });
             }, this);
@@ -25,7 +25,7 @@ define(function (require) {
                 return model.get('active') === true; 
             })
             var item = this.find(function(model){
-                return model.get('name') === obj.view.options.name; 
+                return model.get('name') === obj.name; 
             });
             this.invoke('set', {'active': false});
             if(item){

@@ -12,6 +12,7 @@ define(function (require) {
         if (opt && (opt.slug || opt.slug === '')) {
             this.setAppSlug(opt.slug);
         }
+        this.addPages(opt.pages);
 
         this.initialize.apply(this);
     };
@@ -26,15 +27,24 @@ define(function (require) {
         getPages: function () {
             return this._pages;
         },
-        addApp: function(app){
+        addApp: function (app) {
             this._apps.push(app);
-            //app can add another app 
         },
-        getApps: function(){
+        getApps: function () {
             return this._apps;
         },
         addPage: function (page) {
             this._pages.push(page);
+        },
+        addPages: function(pages, parentName){
+            _.each(pages, function(page){
+                page.parentName = parentName; 
+                this._pages.push(page);
+                if(_.isArray(page.pages)){
+                    this.addPages(page.pages, page.name); 
+                }
+            }, this);
+            console.log('pages',this._pages, pages); 
         },
         getAppSlug: function () {
             return this._appSlug;
@@ -45,18 +55,19 @@ define(function (require) {
         setMediator: function (mediator) {
             this.mediator = mediator;
         },
-        registerApp: function(app){
-        
+        registerApp: function (app) {
+
         },
-        registerApps: function(){},
+        registerApps: function () {},
         registerPage: function (page) {
-            page.options.route = this.getAppSlug() + page.options.route;
+            page.route = '/' + this.getAppSlug() + page.route;
+            console.log('reg',page)
             this.mediator.trigger('page:register', page);
         },
-        registerPages: function(){
-           _.each(this.getPages(), function (page) {
-                var pageRoute = this.calculatePageRoute(page.options.name, '');
-                page.options.route = pageRoute;
+        registerPages: function () {
+            _.each(this.getPages(), function (page) {
+                var pageRoute = this.calculatePageRoute(page.name, '');
+                page.route = pageRoute;
                 this.registerPage(page);
             }, this);
         },
@@ -90,9 +101,13 @@ define(function (require) {
         // },
         calculatePageRoute: function (name, route) {
             var page = this.findPageByName(name);
-            route = page.options.slug + route;
-            if (page.options.parentName) {
-                return this.calculatePageRoute(page.options.parentName, route);
+            route = page.slug + route;
+            if (page.slug) {
+                route = '/' + route;
+            }
+
+            if (page.parentName) {
+                return this.calculatePageRoute(page.parentName, route);
             } else {
                 return route;
             }
@@ -100,13 +115,13 @@ define(function (require) {
         findPageByName: function (name) {
             var pages = this.getPages();
             var page = _.find(pages, function (page) {
-                return page.options.name === name;
+                return page.name === name;
             });
 
             return page;
         },
         start: function () {
-            console.log('start ' + this,this);
+            console.log('start ' + this, this);
             this.registerApps();
             this.registerPages();
         }

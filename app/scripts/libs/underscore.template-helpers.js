@@ -16,7 +16,6 @@ define(function (require) {
         },
 
         template: function (text, data, settings) {
-            console.log('template helpers', arguments)
             // replace the built in _.template function with one that supports the addTemplateHelpers
             // function above. Basically the combo of the addTemplateHelpers function and this new
             // template function allows us to mix in global "helpers" to the data objects passed
@@ -36,7 +35,6 @@ define(function (require) {
 
             var wrappedTemplate = function (data) {
                 data = _.defaults({}, data, templateHelpers);
-                console.log('wrappedTemplate', data);
                 return template.call(this, data);
             };
 

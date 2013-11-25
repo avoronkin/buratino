@@ -15,7 +15,11 @@ define(function (require) {
             var data = {};
             if (this.options.parentName) {
                 var models = this.collection.filter(function (model) {
-                    return model.get('parentName') === this.options.parentName;
+                    if(this.options.parentName === 'root'){
+                        return !model.get('parentName'); 
+                    }else{
+                        return model.get('parentName') === this.options.parentName;
+                    }
                 }, this);
                 data.items = _.map(models, function (model) {
                     return model.toJSON();
@@ -23,7 +27,6 @@ define(function (require) {
             } else {
                 data.items = this.collection.toJSON();
             }
-            console.log('data', data, this.options.parentName);
             return data;
         },
         toString: function () {

@@ -30,6 +30,7 @@ define(function (require) {
     var topBarConfig = require('core/menu/config/topbar.config');
     var topMenu = new Menu(_.extend(topBarConfig, {
         collection: structure,
+        parentName: 'root'
     }));
 
     var sidebarMenuRegion = regionManager.addRegion('sidebar-menu','#sidebar-menu');
@@ -40,7 +41,8 @@ define(function (require) {
     }));
 
     mediator.on('page:change', function (opt) {
-        mainRegion.show(opt.view);
+        console.log('main region',opt)
+        mainRegion.show((new opt.view));
     }, this);
 
     mediator.on('title:change', function (title) {

@@ -8,8 +8,7 @@ define(function(require){
         constructor: function(){
             MenuView.apply(this, arguments);
             mediator.on('page:change',function(page){
-                console.log('sbm page:change', arguments);
-                this.options.parentName = page.view.options.name;
+                this.options.parentName = page.name;
                 this.render();
             }, this);
         }

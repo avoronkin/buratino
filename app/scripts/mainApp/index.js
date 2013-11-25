@@ -2,6 +2,7 @@
 
 define(function (require) {
     var App = require('../core/App');
+    var MainPageView = require('mainApp/pages/MainPageView');
 
     var MainApp = App.extend({
         toString: function(){
@@ -10,19 +11,15 @@ define(function (require) {
     });
     
     var mainApp = new MainApp({
-        slug: ''
+        slug: '',
+        pages: [{
+            view: MainPageView,
+            slug: '',
+            name: 'home',
+            menuName: 'Home link',
+            title: 'Home title'
+        }]
     });
    
-
-    var MainPageView = require('mainApp/pages/MainPageView');
-    var mainPage = new MainPageView({
-        slug: '/',
-        name: 'home',
-        menuName: 'Home link',
-        title: 'Home title'
-    });
-
-    mainApp.addPage(mainPage);
-
     return mainApp;
 });
