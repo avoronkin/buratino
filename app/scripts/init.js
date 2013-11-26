@@ -4,8 +4,6 @@ define(function (require) {
     //var Backbone = require('backbone');
     var Structure = require('core/Structure');
     var Router = require('core/Router');
-    var mainApp = require('mainApp/index');
-    var testApp = require('testApp/index');
     var Menu = require('core/menu/MenuView');
     var SidebarMenu = require('sidebarMenu/SidebarMenuView');
     var mediator = require('./core/mediator');
@@ -42,7 +40,7 @@ define(function (require) {
 
     mediator.on('page:change', function (opt) {
         console.log('main region',opt)
-        mainRegion.show((new opt.view));
+        regionManager.showRegions(opt.regions)
     }, this);
 
     mediator.on('title:change', function (title) {
@@ -63,7 +61,12 @@ define(function (require) {
     });
 
 
+    var MainApp = require('mainApp/index');
+    var mainApp = new MainApp();
     mainApp.start();
+
+    var TestApp = require('testApp/index');
+    var testApp = new TestApp();
     testApp.start();
     topMenuRegion.show(topMenu);
     sidebarMenuRegion.show(sidebarMenu);

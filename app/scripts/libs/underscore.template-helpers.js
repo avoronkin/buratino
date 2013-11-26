@@ -5,9 +5,6 @@ define(function (require) {
 
     var originalUnderscoreTemplateFunction = _.template;
     var templateHelpers = {
-        help: function(){
-            return 'aaaaaaaaaaaaaa'; 
-        } 
     };
 
     _.mixin({

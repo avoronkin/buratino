@@ -6,62 +6,61 @@ define(function (require) {
     var mediator = require('./mediator');
 
     var App = function (opt) {
-        this._pages = [];
-        this._apps = [];
         this.mediator = mediator;
-        if (opt && (opt.slug || opt.slug === '')) {
-            this.setAppSlug(opt.slug);
+        this.name = this.constructor.name || 'App';
+        if (this.constructor.slug || this.constructor.slug === '') {
+            this.setAppSlug(this.constructor.slug);
         }
-        this.addPages(opt.pages);
+        this.addApps(this.constructor.apps);
+        this.addPages(this.constructor.pages);
 
         this.initialize.apply(this);
     };
 
     _.extend(App.prototype, {
         initialize: function () {
-            console.log('init', this);
+            console.log('init' + this, this);
         },
         toString: function () {
-            return 'App';
+            return this.name;
         },
-        getPages: function () {
-            return this._pages;
-        },
+
         addApp: function (app) {
             this._apps.push(app);
         },
+        addApps: function () {
+            this._apps = [];
+
+        },
         getApps: function () {
             return this._apps;
-        },
-        addPage: function (page) {
-            this._pages.push(page);
-        },
-        addPages: function(pages, parentName){
-            _.each(pages, function(page){
-                page.parentName = parentName; 
-                this._pages.push(page);
-                if(_.isArray(page.pages)){
-                    this.addPages(page.pages, page.name); 
-                }
-            }, this);
-            console.log('pages',this._pages, pages); 
-        },
-        getAppSlug: function () {
-            return this._appSlug;
-        },
-        setAppSlug: function (slug) {
-            this._appSlug = slug;
-        },
-        setMediator: function (mediator) {
-            this.mediator = mediator;
         },
         registerApp: function (app) {
 
         },
         registerApps: function () {},
+
+        //Страницы
+
+        getPages: function () {
+            return this._pages;
+        },
+        addPage: function (page) {
+            this._pages.push(page);
+        },
+        addPages: function (pages, parentName) {
+            this._pages = [];
+            _.each(pages, function (page) {
+                page.parentName = parentName;
+                page.appName = this.name;
+                this._pages.push(page);
+                if (_.isArray(page.pages)) {
+                    this.addPages(page.pages, page.name);
+                }
+            }, this);
+        },
         registerPage: function (page) {
             page.route = '/' + this.getAppSlug() + page.route;
-            console.log('reg',page)
             this.mediator.trigger('page:register', page);
         },
         registerPages: function () {
@@ -70,6 +69,16 @@ define(function (require) {
                 page.route = pageRoute;
                 this.registerPage(page);
             }, this);
+        },
+
+        getAppSlug: function () {
+            return this._appSlug;
+        },
+        setAppSlug: function (slug) {
+            this._appSlug = slug;
+        },
+        setMediator: function (mediator) {
+            this.mediator = mediator;
         },
         // groupPagesByParent: function () {
         //     var pages = this.getPages();

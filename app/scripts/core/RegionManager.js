@@ -23,6 +23,15 @@ define(function (require) {
                 this.addRegion(name, el);
             }, this);
         },
+        showRegions: function(obj){
+            _.each(obj, function(opt, regionName){
+                var region = this.getRegion(regionName);
+                var View = opt.view;
+                var viewOptions = opt.viewOptions || {};
+                region.show(new View(viewOptions));
+            }, this);
+        
+        },
         getRegion: function (name) {
             return this._regions[name];
         },

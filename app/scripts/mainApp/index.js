@@ -2,24 +2,26 @@
 
 define(function (require) {
     var App = require('../core/App');
-    var MainPageView = require('mainApp/pages/MainPageView');
+    var PageView = require('core/page/PageView');
 
-    var MainApp = App.extend({
-        toString: function(){
-            return 'MainApp';
-        }
-    });
-    
-    var mainApp = new MainApp({
+    var MainApp = App.extend({},{
         slug: '',
+        name: 'MainApp',
         pages: [{
-            view: MainPageView,
             slug: '',
             name: 'home',
+            regions: {
+                main: {
+                    view: PageView,
+                    viewOptions: {
+                        name: 'home page main region'
+                    }
+                }
+            },
             menuName: 'Home link',
             title: 'Home title'
         }]
     });
-   
-    return mainApp;
+
+    return MainApp;
 });

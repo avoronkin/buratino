@@ -16,7 +16,6 @@ define(['underscore', 'text'], function(_, text) {
             templateSettings = config.config.jst.templateSettings;
         }
 		text.get(req.toUrl(name), function (content) {
-            console.log('config',config)
 			compiled = _.template(content, null, templateSettings);
 			buildMap[name] = compiled;
 			load(compiled);
