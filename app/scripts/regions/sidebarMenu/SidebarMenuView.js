@@ -1,8 +1,8 @@
 'use strict';
 
 define(function(require){
-    var MenuView = require('../core/menu/MenuView');
-    var mediator = require('../core/mediator');
+    var MenuView = require('core/menu/MenuView');
+    var mediator = require('core/mediator');
 
     var SMView = MenuView.extend({
         constructor: function(){

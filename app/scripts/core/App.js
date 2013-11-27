@@ -5,14 +5,17 @@ define(function (require) {
     var Backbone = require('backbone');
     var mediator = require('./mediator');
 
-    var App = function (opt) {
+    var App = function (options) {
+        options || (options = {});
         this.mediator = mediator;
-        this.name = this.constructor.name || 'App';
-        if (this.constructor.slug || this.constructor.slug === '') {
-            this.setAppSlug(this.constructor.slug);
+        this.name = options.name || 'App';
+
+        if (options.slug || options.slug === '') {
+            this.setSlug(options.slug);
         }
-        this.addApps(this.constructor.apps);
-        this.addPages(this.constructor.pages);
+
+        this.addApps(options.apps);
+        this.addPages(options.pages);
 
         this.initialize.apply(this);
     };
@@ -28,8 +31,14 @@ define(function (require) {
         addApp: function (app) {
             this._apps.push(app);
         },
-        addApps: function () {
-            this._apps = [];
+        addApps: function (apps) {
+            this._apps || (this._apps = []);
+            _.each(apps, function(app){
+                app.config.slug = this.getSlug() + '/' + app.config.slug;
+                this.addApp(app)
+                console.log('addApp',app) 
+            }, this);
+
 
         },
         getApps: function () {
@@ -38,7 +47,13 @@ define(function (require) {
         registerApp: function (app) {
 
         },
-        registerApps: function () {},
+        registerApps: function () {
+            _.each(this.getApps(), function(app){
+                var a = new App(app.config);
+                a.start();
+                console.log('start appp')
+            }) 
+        },
 
         //Страницы
 
@@ -49,7 +64,7 @@ define(function (require) {
             this._pages.push(page);
         },
         addPages: function (pages, parentName) {
-            this._pages = [];
+            this._pages ||(this._pages = []);
             _.each(pages, function (page) {
                 page.parentName = parentName;
                 page.appName = this.name;
@@ -60,7 +75,7 @@ define(function (require) {
             }, this);
         },
         registerPage: function (page) {
-            page.route = '/' + this.getAppSlug() + page.route;
+            page.route = '/' + this.getSlug() + page.route;
             this.mediator.trigger('page:register', page);
         },
         registerPages: function () {
@@ -71,14 +86,11 @@ define(function (require) {
             }, this);
         },
 
-        getAppSlug: function () {
+        getSlug: function () {
             return this._appSlug;
         },
-        setAppSlug: function (slug) {
+        setSlug: function (slug) {
             this._appSlug = slug;
-        },
-        setMediator: function (mediator) {
-            this.mediator = mediator;
         },
         // groupPagesByParent: function () {
         //     var pages = this.getPages();
@@ -131,8 +143,8 @@ define(function (require) {
         },
         start: function () {
             console.log('start ' + this, this);
-            this.registerApps();
             this.registerPages();
+            this.registerApps();
         }
 
     });

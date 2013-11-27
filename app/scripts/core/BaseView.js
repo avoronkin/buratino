@@ -4,6 +4,7 @@ define(function (require) {
     var Backbone = require('backbone');
     var _ = require('underscore');
     var mediator = require('./mediator');
+    var template = require('jst!./templates/default.ejs');
 
     var BaseView = Backbone.View.extend({
         constructor: function () {
@@ -23,7 +24,7 @@ define(function (require) {
             return 'BaseView';
         },
 
-        template: _.template(''),
+        template: template,
 
         data: function () {
             return {};

@@ -1,18 +1,22 @@
 'use strict';
 
 define(function (require) {
-    var App = require('../core/App');
-    var PageView = require('core/page/PageView');
+    var test2config = require('apps/test2/structure');
+    var View = require('core/BaseView');
 
-    var TestApp2 = App.extend({}, {
-        name: 'TestApp2',
-        slug: 'test2',
+    return {
+        name: 'TestApp',
+        slug: 'test',
+        apps: [{
+            config: test2config,
+            slug: 'test2'
+        }],
         pages: [{
             slug: '',
             name: 'level1',
             regions: {
                 main: {
-                    view: PageView,
+                    view: View,
                 }
             },
             menuName: 'Level1 link',
@@ -22,7 +26,7 @@ define(function (require) {
                 name: 'level2',
                 regions: {
                     main: {
-                        view: PageView,
+                        view: View,
                     }
                 },
                 menuName: 'level2 link',
@@ -32,7 +36,7 @@ define(function (require) {
                     name: 'level3',
                     regions: {
                         main: {
-                            view: PageView,
+                            view: View,
                         }
                     },
                     menuName: 'level3 link',
@@ -40,7 +44,6 @@ define(function (require) {
                 }]
             }]
         }]
-    });
+    };
 
-    return TestApp2;
 });

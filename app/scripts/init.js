@@ -3,11 +3,12 @@
 define(function (require) {
     //var Backbone = require('backbone');
     var Structure = require('core/Structure');
+    var App = require('core/App');
     var Router = require('core/Router');
     var Menu = require('core/menu/MenuView');
-    var SidebarMenu = require('sidebarMenu/SidebarMenuView');
-    var mediator = require('./core/mediator');
-    var RegionManager = require('./core/RegionManager');
+    var SidebarMenu = require('regions/sidebarMenu/SidebarMenuView');
+    var mediator = require('core/mediator');
+    var RegionManager = require('core/RegionManager');
     var _ = require('underscore');
     var helpers = require('core/templateHelpers');
 
@@ -39,7 +40,6 @@ define(function (require) {
     }));
 
     mediator.on('page:change', function (opt) {
-        console.log('main region',opt)
         regionManager.showRegions(opt.regions)
     }, this);
 
@@ -61,13 +61,14 @@ define(function (require) {
     });
 
 
-    var MainApp = require('mainApp/index');
-    var mainApp = new MainApp();
+    var mainAppConfig = require('apps/main/structure');
+    var mainApp = new App(mainAppConfig);
     mainApp.start();
 
-    var TestApp = require('testApp/index');
-    var testApp = new TestApp();
+    var testAppConfig = require('apps/test/structure');
+    var testApp = new App(testAppConfig);
     testApp.start();
+
     topMenuRegion.show(topMenu);
     sidebarMenuRegion.show(sidebarMenu);
 

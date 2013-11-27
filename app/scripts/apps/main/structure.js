@@ -1,10 +1,9 @@
 'use strict';
 
 define(function (require) {
-    var App = require('../core/App');
-    var PageView = require('core/page/PageView');
+    var View = require('core/BaseView');
 
-    var MainApp = App.extend({},{
+    return {
         slug: '',
         name: 'MainApp',
         pages: [{
@@ -12,7 +11,7 @@ define(function (require) {
             name: 'home',
             regions: {
                 main: {
-                    view: PageView,
+                    view: View,
                     viewOptions: {
                         name: 'home page main region'
                     }
@@ -21,7 +20,6 @@ define(function (require) {
             menuName: 'Home link',
             title: 'Home title'
         }]
-    });
+    };
 
-    return MainApp;
 });
