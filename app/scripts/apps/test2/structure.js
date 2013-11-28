@@ -14,7 +14,7 @@ define(function (require) {
                     view: View,
                 }
             },
-            menuName: 'Level1 link',
+            menuName: '2Level1 link',
             title: 'level1 title',
             pages: [{
                 slug: 'level2',
@@ -24,7 +24,7 @@ define(function (require) {
                         view: View,
                     }
                 },
-                menuName: 'level2 link',
+                menuName: '2level2 link',
                 title: 'level2 title',
                 pages: [{
                     slug: 'level3',
@@ -34,7 +34,7 @@ define(function (require) {
                             view: View,
                         }
                     },
-                    menuName: 'level3 link',
+                    menuName: '2level3 link',
                     title: 'level3 title'
                 }]
             }]

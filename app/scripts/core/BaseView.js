@@ -7,9 +7,10 @@ define(function (require) {
     var template = require('jst!./templates/default.ejs');
 
     var BaseView = Backbone.View.extend({
-        constructor: function () {
-            this._subViews = {};
+        constructor: function (options) {
             this.mediator = mediator;
+            this.views = options.views || {};
+            this.keepEl = options.keepEl || true;
 
             this.render = _.wrap(this.render, function (render) {
                 render.apply(this);
@@ -30,12 +31,36 @@ define(function (require) {
             return {};
         },
 
-        addSubViews: function (obj) {
-            this._subViews = _.extend(this._subViews, obj);
+        render: function () {
+            var html = this.template(this.data(), {
+                variable: 'data'
+            });
+
+            this.$el.html(html);
+            this.renderSubViews();
+            return this;
+        },
+
+        afterRender: function () {},
+
+        remove: function () {
+            if (this.keepEl) {
+                this.$el.html('');
+            } else {
+                this.$el.remove();
+            }
+
+            this.stopListening();
+            return this;
+        },
+
+        close: function () {
+            this.closeSubViews();
+            this.remove();
         },
 
         renderSubViews: function () {
-            _.each(this._subViews, function (view, selector) {
+            _.each(this.views, function (view, selector) {
                 if (view && selector) {
                     view.setElement(this.$(selector))
                         .render();
@@ -43,31 +68,8 @@ define(function (require) {
             }, this);
         },
 
-        render: function () {
-            var html = this.template(this.data(), {
-                variable: 'data'
-            });
-
-//            console.log('render ' + this + ' ' + this.cid, html);
-
-            this.$el.html(html);
-            this.renderSubViews();
-            this.trigger('render');
-            return this;
-        },
-
-        afterRender: function () {
-
-        },
-
-        close: function () {
-            this.closeSubViews();
-            this.undelegateEvents();
-            this.remove();
-        },
-
         closeSubViews: function () {
-            _.invoke(this._subViews, 'close');
+            _.invoke(this.views, 'close');
         }
 
     });

@@ -17,12 +17,13 @@ define(function (require) {
 
     _.extend(Region.prototype, {
         show: function (view) {
+            console.log('show view', view);
             if (this.currentView && (view !== this.currentView) && _.isFunction(this.currentView.close)) {
                 this.currentView.close();
             }
-
+            view.setElement($(this.el));
             view.render();
-            this.attachView(view);
+//            this.attachView(view);
             this.currentView = view;
         },
         attachView: function (view) {

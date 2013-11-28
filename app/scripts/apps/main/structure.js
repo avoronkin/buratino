@@ -2,6 +2,7 @@
 
 define(function (require) {
     var View = require('core/BaseView');
+    var View2 = require('core/TestView');
 
     return {
         slug: '',
@@ -11,9 +12,9 @@ define(function (require) {
             name: 'home',
             regions: {
                 main: {
-                    view: View,
+                    view: View2,
                     viewOptions: {
-                        name: 'home page main region'
+                        name: 'home page main region',
                     }
                 }
             },
