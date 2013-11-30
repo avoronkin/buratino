@@ -2,149 +2,136 @@
 
 define(function (require) {
     var _ = require('underscore');
+    var mediator = require('core/mediator');
     var Backbone = require('backbone');
-    var mediator = require('./mediator');
 
     var App = function (options) {
         options || (options = {});
-        this.mediator = mediator;
-        this.name = options.name || 'App';
+        var name = options.name || 'App';
+        var controllers = [];
+        var apps = [];
+        var slug;
+
+        this.getApps = function () {
+            return apps;
+        };
+
+        this.getControllers = function () {
+            return controllers;
+        };
+
+        this.getName = function () {
+            return name;
+        };
+
+        this.getSlug = function () {
+            return slug;
+        };
+
+        this.setSlug = function (newSlug) {
+            slug = newSlug;
+        };
 
         if (options.slug || options.slug === '') {
             this.setSlug(options.slug);
         }
-
+        console.log('app options', options)
         this.addApps(options.apps);
-        this.addPages(options.pages);
-
+        this.addControllers(options.controllers, options.parentController);
         this.initialize.apply(this);
     };
 
+
     _.extend(App.prototype, {
+
         initialize: function () {
-            console.log('init' + this, this);
+            console.log('init ' + this, this.getControllers());
         },
+
         toString: function () {
-            return this.name;
+            return this.getName();
         },
 
         addApp: function (app) {
-            this._apps.push(app);
+            var apps = this.getApps();
+            app.config.slug = this.getSlug() + '/' + app.config.slug;
+            apps.push(app);
         },
+
         addApps: function (apps) {
-            this._apps || (this._apps = []);
-            _.each(apps, function(app){
-                app.config.slug = this.getSlug() + '/' + app.config.slug;
-                this.addApp(app)
-                console.log('addApp',app) 
-            }, this);
-
-
+            _.each(apps, this.addApp, this);
         },
-        getApps: function () {
-            return this._apps;
-        },
+
         registerApp: function (app) {
-
+            if(app.parentController){
+                app.config.parentController = app.parentController;
+            }
+            console.log('register app', app);
+            var a = new App(app.config);
+            a.start();
         },
+
         registerApps: function () {
-            _.each(this.getApps(), function(app){
-                var a = new App(app.config);
-                a.start();
-                console.log('start appp')
-            }) 
+            _.each(this.getApps(), this.registerApp, this);
         },
 
-        //Страницы
+        addController: function (controller, parentName) {
+            var controllers = this.getControllers();
+            controller.parentName = parentName;
+            controller.appName = this.getName();
 
-        getPages: function () {
-            return this._pages;
+            controllers.push(controller);
+
+            if (_.isArray(controller.controllers)) {
+                this.addControllers(controller.controllers, controller.name);
+            }
         },
-        addPage: function (page) {
-            this._pages.push(page);
-        },
-        addPages: function (pages, parentName) {
-            this._pages ||(this._pages = []);
-            _.each(pages, function (page) {
-                page.parentName = parentName;
-                page.appName = this.name;
-                this._pages.push(page);
-                if (_.isArray(page.pages)) {
-                    this.addPages(page.pages, page.name);
-                }
-            }, this);
-        },
-        registerPage: function (page) {
-            page.route = '/' + this.getSlug() + page.route;
-            this.mediator.trigger('page:register', page);
-        },
-        registerPages: function () {
-            _.each(this.getPages(), function (page) {
-                var pageRoute = this.calculatePageRoute(page.name, '');
-                page.route = pageRoute;
-                this.registerPage(page);
+
+        addControllers: function (controllers, parentName) {
+            _.each(controllers, function (controller) {
+                this.addController(controller, parentName);
             }, this);
         },
 
-        getSlug: function () {
-            return this._appSlug;
+        registerController: function (controller) {
+            controller.route = '/' + this.getSlug() + this.calculateControllerRoute(controller.name, '');
+            mediator.trigger('page:register', controller);
         },
-        setSlug: function (slug) {
-            this._appSlug = slug;
+
+        registerControllers: function () {
+            _.each(this.getControllers(), this.registerController, this);
         },
-        // groupPagesByParent: function () {
-        //     var pages = this.getPages();
-        //     var grouped = _.groupBy(pages, function (page) {
-        //         var groupKey = 'rootLevel';
-        //         if (page.options.parentRouteName) {
-        //             groupKey = page.options.parentRouteName;
-        //         }
-        //         return groupKey;
-        //     });
-        //     return grouped;
-        // },
-        // buildTree: function (branch, list) {
-        //     //            http://stackoverflow.com/a/8523143
-        //     console.log('buildTree', branch, list);
-        //     if (typeof branch === 'undefined') {
-        //         return null;
-        //     }
 
-        //     var tree = [];
-        //     for (var i = 0; i < branch.length; i++) {
-        //         tree.push({
-        //             item: branch[i],
-        //             children: this.buildTree(list[branch[i].options.routeName], list)
-        //         });
-        //     }
-        //     return tree;
-
-        // },
-        calculatePageRoute: function (name, route) {
-            var page = this.findPageByName(name);
-            route = page.slug + route;
-            if (page.slug) {
+        calculateControllerRoute: function (name, route) {
+            var controller = this.findControllerByName(name);
+            console.log('calculateControllerRoute', controller);
+            if (controller && controller.slug) {
+                route = controller.slug + route;
                 route = '/' + route;
             }
 
-            if (page.parentName) {
-                return this.calculatePageRoute(page.parentName, route);
+            if (controller && controller.parentName) {
+                return this.calculateControllerRoute(controller.parentName, route);
             } else {
                 return route;
             }
         },
-        findPageByName: function (name) {
-            var pages = this.getPages();
-            var page = _.find(pages, function (page) {
-                return page.name === name;
+
+        findControllerByName: function (name) {
+            var controllers = this.getControllers();
+
+            var controller = _.find(controllers, function (controller) {
+                return controller.name === name;
             });
 
-            return page;
+            return controller;
         },
+
         start: function () {
             console.log('start ' + this, this);
-            this.registerPages();
+            this.registerControllers();
             this.registerApps();
+            return this;
         }
 
     });

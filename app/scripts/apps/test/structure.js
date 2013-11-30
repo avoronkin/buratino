@@ -2,40 +2,41 @@
 
 define(function (require) {
     var test2config = require('apps/test2/structure');
-    var View = require('core/BaseView');
+    var View = require('regions/View');
 
     return {
         name: 'TestApp',
         slug: 'test',
         apps: [{
             config: test2config,
-            slug: 'test2'
+            slug: 'test2',
+            parentController: 'level2'
         }],
-        pages: [{
+        controllers: [{
             slug: '',
             name: 'level1',
             regions: {
-                main: {
+                '#main': {
                     view: View,
                 }
             },
             menuName: 'Level1 link',
             title: 'level1 title',
-            pages: [{
+            controllers: [{
                 slug: 'level2',
                 name: 'level2',
                 regions: {
-                    main: {
+                    '#main': {
                         view: View,
                     }
                 },
                 menuName: 'level2 link',
                 title: 'level2 title',
-                pages: [{
+                controllers: [{
                     slug: 'level3',
                     name: 'level3',
                     regions: {
-                        main: {
+                        '#main': {
                             view: View,
                         }
                     },

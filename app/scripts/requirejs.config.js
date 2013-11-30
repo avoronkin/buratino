@@ -9,6 +9,9 @@ require.config({
         underscore: {
             exports: '_'
         },
+        handlebars: {
+            exports: 'Handlebars' 
+        },
         backbone: {
             deps: [
                 'underscore',
@@ -31,6 +34,8 @@ require.config({
         lodash: '../bower_components/lodash/dist/lodash',
         underscore: 'libs/underscore.template-helpers',
         jst: 'libs/jst',
+        handlebars : '../bower_components/handlebars/handlebars',
+        hbs: 'libs/hbs',
         rivets: '../bower_components/rivets/dist/rivets',
         'rivets-backbone': '../bower_components/rivets-backbone-adapter/rivets-backbone',
         advice: '../bower_components/advice/advice',

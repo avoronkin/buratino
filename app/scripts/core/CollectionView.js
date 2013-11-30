@@ -1,7 +1,7 @@
 'use strict';
 define(function (require) {
     var _ = require('underscore');
-    var BaseView = require('./BaseView');
+    var BaseView = require('core/views/BaseView');
 
     var CollectionView = BaseView.extend({
         constructor: function (options) {

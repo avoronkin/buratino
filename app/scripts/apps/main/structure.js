@@ -1,20 +1,20 @@
 'use strict';
 
 define(function (require) {
-    var View = require('core/BaseView');
-    var View2 = require('core/TestView');
+    var View = require('regions/View');
 
     return {
         slug: '',
         name: 'MainApp',
-        pages: [{
+        controllers: [{
             slug: '',
             name: 'home',
             regions: {
-                main: {
-                    view: View2,
+                '#main': {
+                    view: View,
                     viewOptions: {
                         name: 'home page main region',
+                        keepEl: true
                     }
                 }
             },

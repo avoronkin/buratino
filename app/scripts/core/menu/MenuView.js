@@ -2,7 +2,7 @@
 
 define(function (require) {
     var defaultOuterTpl = require('jst!./templates/default/outerTpl.ejs');
-    var BaseView = require('core/BaseView');
+    var BaseView = require('core/views/BaseView');
     var _ = require('underscore');
 
     var MenuView = BaseView.extend({

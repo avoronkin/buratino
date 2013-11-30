@@ -23,16 +23,16 @@ define(function (require) {
 
     var regionManager = new RegionManager();
 
-    var mainRegion = regionManager.addRegion('main', '#main');
+    var mainRegion = regionManager.addRegion('#main');
 
-    var topMenuRegion = regionManager.addRegion('top-menu', '#top-menu');
+    var topMenuRegion = regionManager.addRegion('#top-menu');
     var topBarConfig = require('core/menu/config/topbar.config');
     var topMenu = new Menu(_.extend(topBarConfig, {
         collection: structure,
         parentName: 'root'
     }));
 
-    var sidebarMenuRegion = regionManager.addRegion('sidebar-menu','#sidebar-menu');
+    var sidebarMenuRegion = regionManager.addRegion('#sidebar-menu');
     var sideNavConfig = require('core/menu/config/sidenav.config');
     var sidebarMenu = new SidebarMenu(_.extend(sideNavConfig,{
         collection: structure,
