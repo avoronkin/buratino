@@ -2,6 +2,7 @@
 
 define(function (require) {
     var RegionManager = require('core/RegionManager');
+    var _ = require('underscore');
 
     var regionsMixin = function () {
 
@@ -9,7 +10,13 @@ define(function (require) {
             this.regions = options.regions || {};
 
             this.regionManager = new RegionManager();
-            this.regionManager.addRegions(options.regions);
+            if(_.isArray(options.regions)){
+                var els = _.map(options.regions, function(obj){
+                    return _.keys(obj);
+                });
+
+                this.regionManager.addRegions(els);
+            }
         });
 
         this.around('render', function (render) {
@@ -18,7 +25,7 @@ define(function (require) {
             return this;
         });
 
-        this.before('close', function () {
+        this.before('remove', function () {
             this.regionManager.closeAllRegions();
         });
 

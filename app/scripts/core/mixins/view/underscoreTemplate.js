@@ -1,5 +1,6 @@
 'use strict';
 
+
 define(function () {
 
     var underscoreTemplate = function () {

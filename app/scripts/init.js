@@ -7,7 +7,7 @@ define(function (require) {
     var Menu = require('core/menu/MenuView');
     var SidebarMenu = require('regions/sidebarMenu/SidebarMenuView');
     var mediator = require('core/mediator');
-    var RegionManager = require('core/RegionManager');
+    var Region = require('core/Region');
     var _ = require('underscore');
     var helpers = require('core/templateHelpers');
     var BaseView = require('core/views/BaseView');
@@ -22,26 +22,35 @@ define(function (require) {
     });
 
 
-    var regionManager = new RegionManager();
+    // var regionManager = new RegionManager();
 
-    var mainRegion = regionManager.addRegion('#main');
+    // var mainRegion = regionManager.addRegion('#main');
 
-    var topMenuRegion = regionManager.addRegion('#top-menu');
-    var topBarConfig = require('core/menu/config/topbar.config');
-    var topMenu = new Menu(_.extend(topBarConfig, {
-        collection: structure,
-        parentName: 'root'
-    }));
+    // var topMenuRegion = regionManager.addRegion('#top-menu');
+    // var topBarConfig = require('core/menu/config/topbar.config');
+    // var topMenu = new Menu(_.extend(topBarConfig, {
+    //     collection: structure,
+    //     parentName: 'root'
+    // }));
 
-    var sidebarMenuRegion = regionManager.addRegion('#sidebar-menu');
-    var sideNavConfig = require('core/menu/config/sidenav.config');
-    var sidebarMenu = new SidebarMenu(_.extend(sideNavConfig, {
-        collection: structure,
-        parentName: 'test'
-    }));
+    // var sidebarMenuRegion = regionManager.addRegion('#sidebar-menu');
+    // var sideNavConfig = require('core/menu/config/sidenav.config');
+    // var sidebarMenu = new SidebarMenu(_.extend(sideNavConfig, {
+    //     collection: structure,
+    //     parentName: 'test'
+    // }));
+    var mainRegion = new Region({
+        el: '#layout'
+    });
 
     mediator.on('page:change', function (opt) {
-        regionManager.showRegions(opt.regions);
+        console.log('pagge',opt);
+        var View = opt.layout.view;
+        var viewOptions = opt.layout.viewOptions || {};
+        var view = new View(viewOptions);
+
+        mainRegion.show(view);
+
     }, this);
 
     mediator.on('title:change', function (title) {
@@ -66,12 +75,12 @@ define(function (require) {
     var mainApp = new App(mainAppConfig);
     mainApp.start();
 
-    var testAppConfig = require('apps/test/structure');
-    var testApp = new App(testAppConfig);
-    testApp.start();
+    // var testAppConfig = require('apps/test/structure');
+    // var testApp = new App(testAppConfig);
+    // testApp.start();
 
-    topMenuRegion.show(topMenu);
-    sidebarMenuRegion.show(sidebarMenu);
+    // topMenuRegion.show(topMenu);
+    // sidebarMenuRegion.show(sidebarMenu);
 
     router.start();
 });
