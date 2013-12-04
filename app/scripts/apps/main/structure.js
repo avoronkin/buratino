@@ -6,7 +6,7 @@ define(function (require) {
     return {
         slug: '',
         name: 'MainApp',
-        controllers: [{
+        pages: [{
             slug: '',
             name: 'home',
             regions: {

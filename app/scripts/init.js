@@ -1,7 +1,6 @@
 'use strict';
 
 define(function (require) {
-    //var Backbone = require('backbone');
     var Structure = require('core/Structure');
     var App = require('core/App');
     var Router = require('core/Router');
@@ -11,15 +10,17 @@ define(function (require) {
     var RegionManager = require('core/RegionManager');
     var _ = require('underscore');
     var helpers = require('core/templateHelpers');
+    var BaseView = require('core/views/BaseView');
 
     _.addTemplateHelpers(helpers);
-    
+
     var router = new Router();
     var structure = new Structure();
 
     structure.on('change', function () {
         console.log('structure change', structure);
     });
+
 
     var regionManager = new RegionManager();
 
@@ -34,13 +35,13 @@ define(function (require) {
 
     var sidebarMenuRegion = regionManager.addRegion('#sidebar-menu');
     var sideNavConfig = require('core/menu/config/sidenav.config');
-    var sidebarMenu = new SidebarMenu(_.extend(sideNavConfig,{
+    var sidebarMenu = new SidebarMenu(_.extend(sideNavConfig, {
         collection: structure,
         parentName: 'test'
     }));
 
     mediator.on('page:change', function (opt) {
-        regionManager.showRegions(opt.regions)
+        regionManager.showRegions(opt.regions);
     }, this);
 
     mediator.on('title:change', function (title) {

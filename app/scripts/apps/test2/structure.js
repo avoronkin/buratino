@@ -6,7 +6,7 @@ define(function (require) {
     return {
         name: 'TestApp2',
         slug: 'test2',
-        controllers: [{
+        pages: [{
             slug: '',
             name: '1level1',
             regions: {
@@ -16,7 +16,7 @@ define(function (require) {
             },
             menuName: '2Level1 link',
             title: 'level1 title',
-            controllers: [{
+            pages: [{
                 slug: 'level2',
                 name: '1level2',
                 regions: {
@@ -26,7 +26,7 @@ define(function (require) {
                 },
                 menuName: '2level2 link',
                 title: 'level2 title',
-                controllers: [{
+                pages: [{
                     slug: 'level3',
                     name: '1level3',
                     regions: {

@@ -8,7 +8,7 @@ define(function (require) {
     var App = function (options) {
         options || (options = {});
         var name = options.name || 'App';
-        var controllers = [];
+        var pages = [];
         var apps = [];
         var slug;
 
@@ -16,8 +16,8 @@ define(function (require) {
             return apps;
         };
 
-        this.getControllers = function () {
-            return controllers;
+        this.getPages = function () {
+            return pages;
         };
 
         this.getName = function () {
@@ -37,7 +37,7 @@ define(function (require) {
         }
         console.log('app options', options)
         this.addApps(options.apps);
-        this.addControllers(options.controllers, options.parentController);
+        this.addPages(options.pages, options.parentPage);
         this.initialize.apply(this);
     };
 
@@ -45,7 +45,7 @@ define(function (require) {
     _.extend(App.prototype, {
 
         initialize: function () {
-            console.log('init ' + this, this.getControllers());
+            console.log('init ' + this, this.getPages());
         },
 
         toString: function () {
@@ -63,8 +63,8 @@ define(function (require) {
         },
 
         registerApp: function (app) {
-            if(app.parentController){
-                app.config.parentController = app.parentController;
+            if(app.parentPage){
+                app.config.parentPage = app.parentPage;
             }
             console.log('register app', app);
             var a = new App(app.config);
@@ -75,61 +75,61 @@ define(function (require) {
             _.each(this.getApps(), this.registerApp, this);
         },
 
-        addController: function (controller, parentName) {
-            var controllers = this.getControllers();
-            controller.parentName = parentName;
-            controller.appName = this.getName();
+        addPage: function (page, parentName) {
+            var pages = this.getPages();
+            page.parentName = parentName;
+            page.appName = this.getName();
 
-            controllers.push(controller);
+            pages.push(page);
 
-            if (_.isArray(controller.controllers)) {
-                this.addControllers(controller.controllers, controller.name);
+            if (_.isArray(page.pages)) {
+                this.addPages(page.pages, page.name);
             }
         },
 
-        addControllers: function (controllers, parentName) {
-            _.each(controllers, function (controller) {
-                this.addController(controller, parentName);
+        addPages: function (pages, parentName) {
+            _.each(pages, function (page) {
+                this.addPage(page, parentName);
             }, this);
         },
 
-        registerController: function (controller) {
-            controller.route = '/' + this.getSlug() + this.calculateControllerRoute(controller.name, '');
-            mediator.trigger('page:register', controller);
+        registerPage: function (page) {
+            page.route = '/' + this.getSlug() + this.calulatePageRoute(page.name, '');
+            mediator.trigger('page:register', page);
         },
 
-        registerControllers: function () {
-            _.each(this.getControllers(), this.registerController, this);
+        registerPages: function () {
+            _.each(this.getPages(), this.registerPage, this);
         },
 
-        calculateControllerRoute: function (name, route) {
-            var controller = this.findControllerByName(name);
-            console.log('calculateControllerRoute', controller);
-            if (controller && controller.slug) {
-                route = controller.slug + route;
+        calulatePageRoute: function (name, route) {
+            var page = this.findPageByName(name);
+            console.log('calulatePageRoute', page);
+            if (page && page.slug) {
+                route = page.slug + route;
                 route = '/' + route;
             }
 
-            if (controller && controller.parentName) {
-                return this.calculateControllerRoute(controller.parentName, route);
+            if (page && page.parentName) {
+                return this.calulatePageRoute(page.parentName, route);
             } else {
                 return route;
             }
         },
 
-        findControllerByName: function (name) {
-            var controllers = this.getControllers();
+        findPageByName: function (name) {
+            var pages = this.getPages();
 
-            var controller = _.find(controllers, function (controller) {
-                return controller.name === name;
+            var page = _.find(pages, function (page) {
+                return page.name === name;
             });
 
-            return controller;
+            return page;
         },
 
         start: function () {
             console.log('start ' + this, this);
-            this.registerControllers();
+            this.registerPages();
             this.registerApps();
             return this;
         }

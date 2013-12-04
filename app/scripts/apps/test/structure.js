@@ -10,9 +10,9 @@ define(function (require) {
         apps: [{
             config: test2config,
             slug: 'test2',
-            parentController: 'level2'
+            parent: 'level2'
         }],
-        controllers: [{
+        pages: [{
             slug: '',
             name: 'level1',
             regions: {
@@ -22,7 +22,7 @@ define(function (require) {
             },
             menuName: 'Level1 link',
             title: 'level1 title',
-            controllers: [{
+            pages: [{
                 slug: 'level2',
                 name: 'level2',
                 regions: {
@@ -32,7 +32,7 @@ define(function (require) {
                 },
                 menuName: 'level2 link',
                 title: 'level2 title',
-                controllers: [{
+                pages: [{
                     slug: 'level3',
                     name: 'level3',
                     regions: {
