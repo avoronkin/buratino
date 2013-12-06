@@ -2,17 +2,29 @@
 
 define(function (require) {
     var Backbone = require('backbone');
-    var advice = require('advice');
     var baseRender = require('core/mixins/view/baseRender');
     var underscoreTemplate = require('core/mixins/view/underscoreTemplate');
     var afterRender = require('core/mixins/view/afterRender');
     var keepEl = require('core/mixins/view/keepEl');
     var subViews = require('core/mixins/view/subViews');
+    var Factory = require('adviceFactory');
 
-    advice.addMixin(Backbone.View);
+    return Factory.register('view',{
+        base: Backbone.View,
 
-    return Backbone.View.extend({
+        mixins: [
+            baseRender,
+            underscoreTemplate,
+            afterRender,
+            keepEl,
+            subViews
+        ],
 
-    }).mixin([baseRender, underscoreTemplate, afterRender, keepEl, subViews]);
+        clobber: {
+            toString: function(){
+                return 'BaseView';
+            }
+        }
+    });
 
 });

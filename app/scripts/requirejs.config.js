@@ -39,6 +39,7 @@ require.config({
         rivets: '../bower_components/rivets/dist/rivets',
         'rivets-backbone': '../bower_components/rivets-backbone-adapter/rivets-backbone',
         advice: '../bower_components/advice/advice',
+        adviceFactory: '../bower_components/Backbone.AdviceFactory/advicefactory',
         mediator: 'core/mediator'
     },
     config: {
@@ -51,6 +52,7 @@ require.config({
     map: {
         '*': {
             'Backbone': 'backbone',
+            'Backbone.Advice': 'advice',
             '_': 'underscore',
             '$': 'jquery'
         },

@@ -2,6 +2,7 @@
 
 define(function (require) {
     var View = require('regions/View');
+    var MainLayout = require('layouts/main/View');
 
     return {
         name: 'TestApp2',
@@ -9,9 +10,14 @@ define(function (require) {
         pages: [{
             slug: '',
             name: '1level1',
-            regions: {
-                '#main': {
-                    view: View,
+            layout: {
+                view: MainLayout,
+                viewOptions: {
+                    regions: {
+                        '#main': {
+                            view: View,
+                        }
+                    },
                 }
             },
             menuName: '2Level1 link',
@@ -19,9 +25,14 @@ define(function (require) {
             pages: [{
                 slug: 'level2',
                 name: '1level2',
-                regions: {
-                    '#main': {
-                        view: View,
+                layout: {
+                    view: MainLayout,
+                    viewOptions: {
+                        regions: {
+                            '#main': {
+                                view: View,
+                            }
+                        },
                     }
                 },
                 menuName: '2level2 link',
@@ -29,9 +40,14 @@ define(function (require) {
                 pages: [{
                     slug: 'level3',
                     name: '1level3',
-                    regions: {
-                        '#main': {
-                            view: View,
+                    layout: {
+                        view: MainLayout,
+                        viewOptions: {
+                            regions: {
+                                '#main': {
+                                    view: View,
+                                }
+                            },
                         }
                     },
                     menuName: '2level3 link',

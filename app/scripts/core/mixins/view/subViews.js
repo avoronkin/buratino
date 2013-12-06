@@ -8,15 +8,9 @@ define(function (require) {
 
         this.before('initialize', function (options) {
             this.regions = options.regions || {};
-
+            this.regionsEls = _.keys(this.regions);
             this.regionManager = new RegionManager();
-            if(_.isArray(options.regions)){
-                var els = _.map(options.regions, function(obj){
-                    return _.keys(obj);
-                });
-
-                this.regionManager.addRegions(els);
-            }
+            this.regionManager.addRegions(this.regionsEls);
         });
 
         this.around('render', function (render) {

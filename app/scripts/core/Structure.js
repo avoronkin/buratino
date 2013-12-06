@@ -22,10 +22,6 @@ define(function (require) {
         },
 
         onPageChange: function(obj){
-            //var activeItems = this.filter(function(model){
-            //    return model.get('active') === true;
-            //});
-
             var item = this.find(function(model){
                 return model.get('name') === obj.name;
             });
@@ -39,5 +35,5 @@ define(function (require) {
 
     });
 
-    return Structure;
+    return new Structure();
 });

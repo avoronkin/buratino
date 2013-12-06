@@ -35,7 +35,6 @@ define(function (require) {
         if (options.slug || options.slug === '') {
             this.setSlug(options.slug);
         }
-        console.log('app options', options)
         this.addApps(options.apps);
         this.addPages(options.pages, options.parentPage);
         this.initialize.apply(this);
@@ -66,7 +65,6 @@ define(function (require) {
             if(app.parentPage){
                 app.config.parentPage = app.parentPage;
             }
-            console.log('register app', app);
             var a = new App(app.config);
             a.start();
         },
@@ -104,7 +102,7 @@ define(function (require) {
 
         calulatePageRoute: function (name, route) {
             var page = this.findPageByName(name);
-            console.log('calulatePageRoute', page);
+
             if (page && page.slug) {
                 route = page.slug + route;
                 route = '/' + route;

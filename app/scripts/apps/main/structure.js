@@ -13,7 +13,7 @@ define(function (require) {
             layout: {
                 view: MainLayout,
                 viewOptions: {
-                    regions: [{
+                    regions: {
                         '#main': {
                             view: View,
                             viewOptions: {
@@ -21,7 +21,7 @@ define(function (require) {
                                 keepEl: true
                             }
                         }
-                    }]
+                    }
                 },
             },
             menuName: 'Home link',

@@ -14,7 +14,7 @@ define(function (require) {
         this._mediator.on('page:register', function (page) {
             self.route(page.name, page.route, function (routeParams) {
                 page.routeParams = routeParams;
-                self._mediator.trigger('page:change', page);
+                self._mediator.trigger('page:change', page );
                 self._mediator.trigger('title:change', page.title);
 
             });

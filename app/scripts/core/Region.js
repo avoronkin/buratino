@@ -13,7 +13,7 @@ define(function (require) {
     _.extend(Region.prototype, {
 
         show: function (view) {
-            console.log('show view', view);
+            console.log('show '+view, view);
             if (this.currentView && (view !== this.currentView) && _.isFunction(this.currentView.remove)) {
                 this.currentView.remove();
             }
@@ -22,7 +22,6 @@ define(function (require) {
         },
 
         attachView: function (view) {
-            console.log('attachView', view, this.el)
             if (view.keepEl) {
                 view.setElement($(this.el))
                     .render();

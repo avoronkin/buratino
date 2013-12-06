@@ -3,6 +3,7 @@
 define(function (require) {
     var test2config = require('apps/test2/structure');
     var View = require('regions/View');
+    var MainLayout = require('layouts/main/View');
 
     return {
         name: 'TestApp',
@@ -15,9 +16,15 @@ define(function (require) {
         pages: [{
             slug: '',
             name: 'level1',
-            regions: {
-                '#main': {
-                    view: View,
+            layout: {
+                view: MainLayout,
+                viewOptions: {
+                    regions: {
+                        '#main': {
+                            view: View
+                        }
+                    }
+
                 }
             },
             menuName: 'Level1 link',
@@ -25,24 +32,19 @@ define(function (require) {
             pages: [{
                 slug: 'level2',
                 name: 'level2',
-                regions: {
-                    '#main': {
-                        view: View,
-                    }
-                },
-                menuName: 'level2 link',
-                title: 'level2 title',
-                pages: [{
-                    slug: 'level3',
-                    name: 'level3',
-                    regions: {
-                        '#main': {
-                            view: View,
+                layout: {
+                    view: MainLayout,
+                    viewOptions: {
+                        regions: {
+                            '#main': {
+                                view: View
+                            }
                         }
+
                     },
-                    menuName: 'level3 link',
-                    title: 'level3 title'
-                }]
+                    menuName: 'level2 link',
+                    title: 'level2 title',
+                }
             }]
         }]
     };
