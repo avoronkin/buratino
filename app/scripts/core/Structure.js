@@ -16,24 +16,26 @@ define(function (require) {
                     active: false
                 });
             }, this);
-            
+
             mediator.on('page:change', this.onPageChange, this);
             Backbone.Collection.apply(this, arguments);
         },
 
-        onPageChange: function(obj){
-            var item = this.find(function(model){
+        onPageChange: function (obj) {
+            var item = this.find(function (model) {
                 return model.get('name') === obj.name;
             });
 
-            this.invoke('set', {'active': false});
+            this.invoke('set', {
+                'active': false
+            });
 
-            if(item){
-               item.set('active', true);
+            if (item) {
+                item.set('active', true);
             }
         }
 
     });
 
-    return new Structure();
+    return Structure;
 });

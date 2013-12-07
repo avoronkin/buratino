@@ -1,7 +1,10 @@
 /**
  * require-jst
  */
-define(['underscore', 'text'], function(_, text) {
+define(function(require){
+    'use strict';
+    var _ = require('underscore');
+    var text = require('text');
 	var buildMap = {},
 		jst = {};
 

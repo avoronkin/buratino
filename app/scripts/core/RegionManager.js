@@ -32,7 +32,7 @@ define(function (require) {
             var region = this.getRegion(el);
 
             if(region){
-                region.show(new View(viewOptions));
+                region.show(View,viewOptions);
             }
         },
 

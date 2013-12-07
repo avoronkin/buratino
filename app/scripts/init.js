@@ -1,30 +1,14 @@
 'use strict';
 
 define(function (require) {
-    var structure = require('core/Structure');
+    var structure = require('models/structure');
     var App = require('core/App');
     var Router = require('core/Router');
     var mediator = require('core/mediator');
     var Region = require('core/Region');
-    var _ = require('underscore');
-    var helpers = require('core/templateHelpers');
-
-    _.addTemplateHelpers(helpers);
 
     var router = new Router();
 
-    // var regionManager = new RegionManager();
-
-    // var mainRegion = regionManager.addRegion('#main');
-
-//    var SidebarMenu = require('regions/sidebarMenu/SidebarMenuView');
-    // var sidebarMenuRegion = regionManager.addRegion('#sidebar-menu');
-    // var sideNavConfig = require('core/menu/config/sidenav.config');
-    // var sidebarMenu = new SidebarMenu(_.extend(sideNavConfig, {
-    //     collection: structure,
-    //     parentName: 'test'
-    // }));
-    
     var mainRegion = new Region({
         el: '#layout'
     });
@@ -33,9 +17,8 @@ define(function (require) {
         console.log('page:change',opt);
         var View = opt.layout.view;
         var viewOptions = opt.layout.viewOptions || {};
-        var view = new View(viewOptions);
 
-        mainRegion.show(view);
+        mainRegion.show(View, viewOptions);
 
     }, this);
 
@@ -57,15 +40,14 @@ define(function (require) {
     });
 
 
-    var mainAppConfig = require('apps/main/structure');
+    var mainAppConfig = require('apps/main/config');
     var mainApp = new App(mainAppConfig);
     mainApp.start();
 
-    var testAppConfig = require('apps/test/structure');
+    var testAppConfig = require('apps/test/config');
     var testApp = new App(testAppConfig);
     testApp.start();
 
-    // sidebarMenuRegion.show(sidebarMenu);
 
     router.start();
 });

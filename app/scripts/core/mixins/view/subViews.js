@@ -13,9 +13,15 @@ define(function (require) {
             this.regionManager.addRegions(this.regionsEls);
         });
 
+        this.setDefaults({
+            renderSubViews: function(){
+                this.regionManager.showRegions(this.regions);
+            }
+        });
+
         this.around('render', function (render) {
             render();
-            this.regionManager.showRegions(this.regions);
+            this.renderSubViews();
             return this;
         });
 

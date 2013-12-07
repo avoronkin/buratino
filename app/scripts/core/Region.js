@@ -12,7 +12,9 @@ define(function (require) {
 
     _.extend(Region.prototype, {
 
-        show: function (view) {
+        show: function (View, viewOptions) {
+            var view = new View(viewOptions);
+
             console.log('show '+view, view);
             if (this.currentView && (view !== this.currentView) && _.isFunction(this.currentView.remove)) {
                 this.currentView.remove();

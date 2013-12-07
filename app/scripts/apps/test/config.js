@@ -1,8 +1,9 @@
 'use strict';
 
 define(function (require) {
-    var test2config = require('apps/test2/structure');
+    var test2config = require('apps/test2/config');
     var View = require('regions/View');
+    var View2 = require('regions/View2');
     var MainLayout = require('layouts/main/View');
 
     return {
@@ -21,7 +22,7 @@ define(function (require) {
                 viewOptions: {
                     regions: {
                         '#main': {
-                            view: View
+                            view: View2
                         }
                     }
 
