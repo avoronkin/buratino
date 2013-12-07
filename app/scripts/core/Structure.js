@@ -33,7 +33,30 @@ define(function (require) {
             if (item) {
                 item.set('active', true);
             }
+
+            var b = this.getBreadcrumb(obj.name,[]);
+            console.log('items',b);
+        },
+
+        getTree: function(start){
+            var tree;
+            return tree;
+        },
+
+        getBreadcrumb: function(end,items){
+            var item = this.find(function (model) {
+                return model.get('name') === end;
+            });
+            items.push(item);
+
+            if(item.get('parentName')){
+                this.getBreadcrumb(item.get('parentName'),items) ;
+            }else{
+                return items;
+            }
+        
         }
+
 
     });
 
