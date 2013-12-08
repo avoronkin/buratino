@@ -8,10 +8,10 @@ define(function (require) {
 
     return {
         name: 'TestApp',
-        slug: 'test',
+        slug: 'app1',
         apps: [{
             config: test2config,
-            slug: 'test2',
+            slug: 'sub-app2',
             parent: 'level2'
         }],
         pages: [{
@@ -28,7 +28,7 @@ define(function (require) {
 
                 }
             },
-            menuName: 'Level1 link',
+            menuName: 'level1 link',
             title: 'level1 title',
             pages: [{
                 slug: 'level2',

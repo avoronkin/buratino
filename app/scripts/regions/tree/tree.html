@@ -1,0 +1,12 @@
+<ul>
+    <li>
+    <a href="<%=data.tree.route%>">
+        <%= data.tree.menuName %>
+    </a>
+        <% if(data.tree.childrens){%>
+            <% _.each(data.tree.childrens, function(tree){%>
+            <%= data.template({tree:tree,template:data.template})%> 
+            <%})%> 
+        <%}%>     
+    </li>
+</ul>

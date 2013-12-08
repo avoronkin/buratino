@@ -9,7 +9,7 @@ define(function (require) {
         slug: 'test2',
         pages: [{
             slug: '',
-            name: '1level1',
+            name: '2level1',
             layout: {
                 view: MainLayout,
                 viewOptions: {
@@ -20,11 +20,11 @@ define(function (require) {
                     },
                 }
             },
-            menuName: '2Level1 link',
-            title: 'level1 title',
+            menuName: '2level1 link',
+            title: '2level1 title',
             pages: [{
-                slug: 'level2',
-                name: '1level2',
+                slug: '2level2',
+                name: '2level2',
                 layout: {
                     view: MainLayout,
                     viewOptions: {
@@ -36,10 +36,10 @@ define(function (require) {
                     }
                 },
                 menuName: '2level2 link',
-                title: 'level2 title',
+                title: '2level2 title',
                 pages: [{
-                    slug: 'level3',
-                    name: '1level3',
+                    slug: '2level3',
+                    name: '2level3',
                     layout: {
                         view: MainLayout,
                         viewOptions: {
@@ -51,7 +51,7 @@ define(function (require) {
                         }
                     },
                     menuName: '2level3 link',
-                    title: 'level3 title'
+                    title: '2level3 title'
                 }]
             }]
         }]

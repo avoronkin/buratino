@@ -3,10 +3,10 @@
 define(function (require) {
     // var _ = require('underscore');
     var Factory = require('adviceFactory');
-    var template = require('jst!./breadcrumbs.html');
+    var template = require('jst!./tree.html');
     var BaseView = require('core/views/BaseView');
 
-    var BreadcrumbsView = Factory.register('bredcrumbs', {
+    var BreadcrumbsView = Factory.register('tree', {
         base: 'view',
 
         initialize: function () {
@@ -19,7 +19,12 @@ define(function (require) {
             data: function () {
                 var data = {};
                 var current = this.collection.getCurrent();
-                data.breadcrumbs = this.collection.getBreadcrumbs(current);
+                var root = this.collection.getRoot(current);
+
+                data.tree = this.collection.getTree(root) || {};
+                data.template = this.template;
+                console.log('tree data', data);
+
                 return data;
             },
 

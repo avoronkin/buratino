@@ -27,6 +27,7 @@ define(function (require) {
 
         this.before('remove', function () {
             this.regionManager.closeAllRegions();
+            console.log('remove '+this, this);
         });
 
     };
