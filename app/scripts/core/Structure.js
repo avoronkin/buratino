@@ -3,6 +3,7 @@
 define(function (require) {
     var Backbone = require('backbone');
     var mediator = require('core/mediator');
+    var _ = require('underscore');
 
     var Structure = Backbone.Collection.extend({
 
@@ -13,7 +14,8 @@ define(function (require) {
                     route: page.route,
                     name: page.name,
                     parentName: page.parentName,
-                    active: false
+                    active: false,
+                    here: false
                 });
             }, this);
 
@@ -27,34 +29,67 @@ define(function (require) {
             });
 
             this.invoke('set', {
-                'active': false
+                'active': false,
+                'here': false
             });
 
             if (item) {
                 item.set('active', true);
+                item.set('here', true);
             }
 
-            var b = this.getBreadcrumb(obj.name,[]);
-            console.log('items',b);
         },
 
-        getTree: function(start){
+        getCurrent: function () {
+            var current = this.find(function (model) {
+                return model.get('here');
+            });
+            console.log('getCurrent', current);
+
+            return current;
+        },
+
+        getTree: function (start) {
             var tree;
             return tree;
         },
 
-        getBreadcrumb: function(end,items){
-            var item = this.find(function (model) {
-                return model.get('name') === end;
-            });
-            items.push(item);
+        getBreadcrumbs: function () {
+            var items = [];
+            var page = this.getCurrent();
+            if (page) {
+                var endName = page.get('name');
+                var models = this._getBreadcrumb(endName, []);
+                
+                console.log('getBreadcrumbs',page.get('name'),models,items);
+                if (models) {
+                    items = _.map(models, function (model) {
+                        return model.toJSON();
+                    });
+                }
 
-            if(item.get('parentName')){
-                this.getBreadcrumb(item.get('parentName'),items) ;
-            }else{
+            }
+
+            return items;
+        },
+
+        _getBreadcrumb: function (endName, items) {
+            var item = this.find(function (model) {
+                return model.get('name') === endName;
+            });
+            console.log('_getBreadcrumb', endName, items,item,this);
+
+            if (item) {
+                items.push(item);
+            }
+
+            if (item && item.get('parentName')) {
+                return this._getBreadcrumb(item.get('parentName'), items);
+            } else {
+                console.log('_getBreadcrumb return',items);
                 return items;
             }
-        
+
         }
 
 

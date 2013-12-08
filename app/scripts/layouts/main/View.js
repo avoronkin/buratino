@@ -5,6 +5,8 @@ define(function (require) {
     var TopMenu = require('core/menu/MenuView');
     var topMenuConfig = require('regions/topMenu/topMenuConfig');
     var SidebarMenu = require('regions/sidebarMenu/SidebarMenuView');
+    var Breadcrumbs = require('regions/breadcrumbs/Breadcrumbs');
+    var structure = require('models/structure');
     var sidebarMenuConfig = require('regions/sidebarMenu/sidebarMenuConfig');
     var _ = require('underscore');
     var Factory = require('adviceFactory');
@@ -17,6 +19,7 @@ define(function (require) {
         initialize: function () {
             this.regionManager.addRegion('#top-menu');
             this.regionManager.addRegion('#sidebar-menu');
+            this.regionManager.addRegion('#breadcrumbs-menu');
 
             this.regions = _.extend(this.regions, {
                 '#top-menu': {
@@ -26,6 +29,12 @@ define(function (require) {
                 '#sidebar-menu': {
                     view: SidebarMenu,
                     viewOptions: sidebarMenuConfig
+                },
+                '#breadcrumbs-menu': {
+                    view: Breadcrumbs,
+                    viewOptions: {
+                        collection: structure 
+                    }
                 }
             });
 

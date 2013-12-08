@@ -10,7 +10,6 @@ define(function (require) {
         base: 'view',
         
         initialize: function (options) {
-            console.log('men view', arguments);
             this.template = options.outerTpl;
             this.listenTo(this.collection, 'add remove change', this.render);
         },

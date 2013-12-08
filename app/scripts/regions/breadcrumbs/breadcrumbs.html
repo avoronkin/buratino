@@ -1,0 +1,7 @@
+dcrumbs template
+<ul class="breadcrumbs">
+<% _.each(data.breadcrumbs, function(item){%>
+
+<li><a href="<%=item.route%>"><%= item.name %></a></li>
+<%})%>
+</ul>
