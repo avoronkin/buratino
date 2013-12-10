@@ -16,25 +16,22 @@ define(function (require) {
         template: template,
 
         initialize: function () {
-            this.regionManager.addRegion('#top-menu');
-            this.regionManager.addRegion('#sidebar-menu');
-            this.regionManager.addRegion('#breadcrumbs-menu');
 
-            this.regions = _.extend(this.regions, {
+            this.views = _.extend(this.views, {
                 '#top-menu': {
-                    view: TopMenu,
-                    viewOptions: topMenuConfig
+                    constructor: TopMenu,
+                    options: topMenuConfig
                 },
                 '#sidebar-menu': {
-                    view: Tree,
-                    viewOptions: {
+                    constructor: Tree,
+                    options: {
                         collection: structure
                     }
                 },
                 '#breadcrumbs-menu': {
-                    view: Breadcrumbs,
-                    viewOptions: {
-                        collection: structure 
+                    constructor: Breadcrumbs,
+                    options: {
+                        collection: structure
                     }
                 }
             });
@@ -43,8 +40,8 @@ define(function (require) {
 
         clobber: {
 
-            toString: function(){
-                return 'layout' 
+            toString: function () {
+                return 'layout';
             }
 
         }

@@ -10,48 +10,54 @@ define(function (require) {
         pages: [{
             slug: '',
             name: '2level1',
-            layout: {
-                view: MainLayout,
-                viewOptions: {
-                    regions: {
-                        '#main': {
-                            view: View,
-                        }
-                    },
-                }
-            },
-            menuName: '2level1 link',
             title: '2level1 title',
-            pages: [{
-                slug: '2level2',
-                name: '2level2',
-                layout: {
-                    view: MainLayout,
-                    viewOptions: {
-                        regions: {
+            menuName: '2level1 link',
+            views: {
+                '#layout': {
+                    constructor: MainLayout,
+                    options: {
+                        views: {
                             '#main': {
-                                view: View,
+                                constructor: View,
                             }
                         },
                     }
-                },
-                menuName: '2level2 link',
+                }
+            },
+            pages: [{
+                slug: '2level2',
+                name: '2level2',
                 title: '2level2 title',
+                menuName: '2level2 link',
+                views: {
+                    '#layout': {
+                        constructor: MainLayout,
+                        options: {
+                            views: {
+                                '#main': {
+                                    constructor: View
+                                }
+                            }
+                        }
+                    }
+                },
                 pages: [{
                     slug: '2level3',
                     name: '2level3',
-                    layout: {
-                        view: MainLayout,
-                        viewOptions: {
-                            regions: {
-                                '#main': {
-                                    view: View,
-                                }
-                            },
-                        }
-                    },
+                    title: '2level3 title',
                     menuName: '2level3 link',
-                    title: '2level3 title'
+                    views: {
+                        '#layout': {
+                            constructor: MainLayout,
+                            options: {
+                                views: {
+                                    '#main': {
+                                        constructor: View
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }]
             }]
         }]

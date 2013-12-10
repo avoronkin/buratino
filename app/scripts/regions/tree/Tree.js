@@ -6,7 +6,7 @@ define(function (require) {
     var template = require('jst!./tree.html');
     var BaseView = require('core/views/BaseView');
 
-    var BreadcrumbsView = Factory.register('tree', {
+    var Tree = Factory.register('tree', {
         base: 'view',
 
         initialize: function () {
@@ -23,18 +23,17 @@ define(function (require) {
 
                 data.tree = this.collection.getTree(root) || {};
                 data.template = this.template;
-                console.log('tree data', data);
 
                 return data;
             },
 
             toString: function () {
-                return 'BreadcrumbsView';
+                return 'Tree';
             }
         }
     });
 
-    return BreadcrumbsView;
+    return Tree;
 
 
 

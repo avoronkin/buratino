@@ -42,8 +42,8 @@ define(function (require) {
 
                 item.set('here', true);
             }
-            console.log('root', this.getRoot(item));
-            console.log('tree', this.getTree(this.getRoot(item)));
+            // console.log('root', this.getRoot(item));
+            // console.log('tree', this.getTree(this.getRoot(item)));
 
         },
 
@@ -88,7 +88,7 @@ define(function (require) {
                     'parentName': name
                 });
             }
-            console.log('getChildrens', arguments, name, childrens, this.toJSON());
+            // console.log('getChildrens', arguments, name, childrens, this.toJSON());
 
             return childrens;
 
@@ -108,7 +108,7 @@ define(function (require) {
 
             }
 
-            console.log('getTree', node, arguments, childrens);
+            // console.log('getTree', node, arguments, childrens);
             return node;
         },
 

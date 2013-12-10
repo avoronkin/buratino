@@ -53,9 +53,14 @@ define(function (require) {
 
         addApp: function (app) {
             var apps = this.getApps();
+            app = this.setAppSlug(app);
+            apps.push(app);
+        },
+
+        setAppSlug: function(app){
             app.config.slug = app.slug ? app.slug : app.config.slug;
             app.config.slug = this.getSlug() + '/' + app.config.slug;
-            apps.push(app);
+            return app;
         },
 
         addApps: function (apps) {

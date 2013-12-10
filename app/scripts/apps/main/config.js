@@ -10,19 +10,17 @@ define(function (require) {
         pages: [{
             slug: '',
             name: 'home',
-            layout: {
-                view: MainLayout,
-                viewOptions: {
-                    regions: {
-                        '#main': {
-                            view: View,
-                            viewOptions: {
-                                name: 'home page main region',
-                                keepEl: true
+            views: {
+                '#layout': {
+                    constructor: MainLayout,
+                    options: {
+                        views: {
+                            '#main': {
+                                constructor: View,
                             }
                         }
                     }
-                },
+                }
             },
             menuName: 'Home link',
             title: 'Home title'

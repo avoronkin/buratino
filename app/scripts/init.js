@@ -5,22 +5,26 @@ define(function (require) {
     var App = require('core/App');
     var Router = require('core/Router');
     var mediator = require('core/mediator');
-    var Region = require('core/Region');
-
+    var _ = require('underscore');
     var router = new Router();
 
-    var mainRegion = new Region({
-        el: '#layout'
+    var views = {};
+
+    mediator.on('page:change', function (page) {
+        console.log('page:change',page);
+
+        _.each(page.views, function(view, el){
+
+            if(views[el] && views[el].remove){
+                views[el].remove();
+            }
+
+            views[el] = new view.constructor(view.options);
+            views[el].setElement(el).render();
+
+        });
+
     });
-
-    mediator.on('page:change', function (opt) {
-        console.log('page:change',opt);
-        var View = opt.layout.view;
-        var viewOptions = opt.layout.viewOptions || {};
-
-        mainRegion.show(View, viewOptions);
-
-    }, this);
 
     mediator.on('title:change', function (title) {
         $('title')

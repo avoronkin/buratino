@@ -1,21 +1,31 @@
 'use strict';
 
 define(function (require) {
-    var RegionManager = require('core/RegionManager');
     var _ = require('underscore');
 
     var regionsMixin = function () {
 
         this.before('initialize', function (options) {
-            this.regions = options.regions || {};
-            this.regionsEls = _.keys(this.regions);
-            this.regionManager = new RegionManager();
-            this.regionManager.addRegions(this.regionsEls);
+            options = options || {};
+            this.views = options.views || {};
         });
 
         this.setDefaults({
-            renderSubViews: function(){
-                this.regionManager.showRegions(this.regions);
+            renderSubViews: function () {
+                _.each(this.views, function (view, el) {
+                    if(!view.instance){
+                        view.instance = new view.constructor(view.options);
+                    }
+                    view.instance.setElement(el).render();
+                });
+            },
+
+            removeSubViews: function () {
+                _.each(this.views, function (view) {
+                    if (view.instance) {
+                        view.instance.remove();
+                    }
+                });
             }
         });
 
@@ -25,9 +35,11 @@ define(function (require) {
             return this;
         });
 
-        this.before('remove', function () {
-            this.regionManager.closeAllRegions();
-            console.log('remove '+this, this);
+        this.around('remove', function (remove) {
+            this.removeSubViews();
+            remove();
+            // console.log('remove ' + this, this);
+            return this;
         });
 
     };

@@ -17,15 +17,16 @@ define(function (require) {
         pages: [{
             slug: '',
             name: 'level1',
-            layout: {
-                view: MainLayout,
-                viewOptions: {
-                    regions: {
-                        '#main': {
-                            view: View2
+            views: {
+                '#layout': {
+                    constructor: MainLayout,
+                    options: {
+                        views: {
+                            '#main': {
+                                constructor: View2,
+                            }
                         }
                     }
-
                 }
             },
             menuName: 'level1 link',
@@ -33,19 +34,20 @@ define(function (require) {
             pages: [{
                 slug: 'level2',
                 name: 'level2',
-                layout: {
-                    view: MainLayout,
-                    viewOptions: {
-                        regions: {
-                            '#main': {
-                                view: View
+                views: {
+                    '#layout': {
+                        constructor: MainLayout,
+                        options: {
+                            views: {
+                                '#main': {
+                                    constructor: View,
+                                }
                             }
                         }
-
-                    },
-                    menuName: 'level2 link',
-                    title: 'level2 title',
-                }
+                    }
+                },
+                menuName: 'level2 link',
+                title: 'level2 title',
             }]
         }]
     };
