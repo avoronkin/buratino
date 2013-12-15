@@ -14,7 +14,7 @@ define(function (require) {
         console.log('page:change',page);
 
         _.each(page.views, function(view, el){
-
+            console.log('page.views', view)
             if(views[el] && views[el].remove){
                 views[el].remove();
             }

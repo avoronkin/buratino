@@ -2,5 +2,5 @@
 
 define(function(require){
     var Menu = require('core/menu/MenuView');
-    return Menu.extend({});
+     return Menu.extend({});
 });

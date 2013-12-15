@@ -9,11 +9,6 @@ define(function (require) {
     return {
         name: 'TestApp',
         slug: 'app1',
-        apps: [{
-            config: test2config,
-            slug: 'sub-app2',
-            parent: 'level2'
-        }],
         pages: [{
             slug: '',
             name: 'level1',

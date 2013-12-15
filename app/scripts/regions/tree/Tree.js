@@ -10,7 +10,7 @@ define(function (require) {
         base: 'view',
 
         initialize: function () {
-            this.listenTo(this.collection, 'add remove change', this.render);
+            this.listenTo(this.collection, 'add remove changed', this.render);
         },
 
         clobber: {
@@ -18,10 +18,18 @@ define(function (require) {
 
             data: function () {
                 var data = {};
+                var tree = {};
+                var root;
                 var current = this.collection.getCurrent();
-                var root = this.collection.getRoot(current);
 
-                data.tree = this.collection.getTree(root) || {};
+                if(current){
+                    root = current.getRoot();
+                    if(root){
+                        tree = root.getTree();               
+                    }
+                }
+
+                data.tree = tree || {};
                 data.template = this.template;
 
                 return data;

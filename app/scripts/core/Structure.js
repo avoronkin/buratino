@@ -5,19 +5,99 @@ define(function (require) {
     var mediator = require('core/mediator');
     var _ = require('underscore');
 
+    var Node = Backbone.Model.extend({
+        nodeId: 'name',
+        nodeParentId: 'parentName',
+
+        addNode: function (nodeModel) {
+            nodeModel.set(this.nodeParentId, this.get('name'));
+            this.collection.add(nodeModel);
+        },
+
+        getRoot: function () {
+            var parent = this.getParent();
+
+            if (!parent) {
+                return this;
+            } else {
+                return parent.getRoot();
+            }
+        },
+
+        getParent: function () {
+            var parent, parentId, where = {};
+
+            parentId = this.get(this.nodeParentId);
+
+            if (parentId) {
+                where[this.nodeId] = parentId;
+
+                parent = this.collection.findWhere(where);
+            }
+
+            return parent;
+        },
+
+        getChildrens: function () {
+            var nodeId, childrens = [],
+                where = {};
+
+            nodeId = this.get(this.nodeId);
+            where[this.nodeParentId] = nodeId;
+
+            childrens = this.collection.where(where);
+
+            return childrens;
+
+        },
+
+        getTree: function getTree() {
+            var node = this.toJSON();
+            var models = this.getChildrens();
+
+            node.childrens = _.map(models, function (model) {
+                return model.getTree();
+            }, this);
+
+            return node;
+        },
+
+        getBreadcrumbs: function () {
+            return this._getBreadcrumbs();
+        },
+
+        _getBreadcrumbs: function (models) {
+            var parent = this.getParent();
+
+            models = models || [];
+
+            models.push(this);
+
+
+            if (parent) {
+                return parent._getBreadcrumbs(models);
+            } else {
+                return models.reverse();
+            }
+        }
+
+    });
+
+
     var Structure = Backbone.Collection.extend({
+        model: Node,
 
         constructor: function () {
-            mediator.on('page:register', function (page) {
-                this.add({
-                    menuName: page.menuName,
-                    route: page.route,
-                    name: page.name,
-                    parentName: page.parentName,
-                    active: false,
-                    here: false
-                });
-            }, this);
+            // mediator.on('page:register', function (page) {
+            //     this.add({
+            //         menuName: page.menuName,
+            //         route: page.route,
+            //         name: page.name,
+            //         parentName: page.parentName,
+            //         active: false,
+            //         here: false
+            //     });
+            // }, this);
 
             mediator.on('page:change', this.onPageChange, this);
             Backbone.Collection.apply(this, arguments);
@@ -31,20 +111,21 @@ define(function (require) {
             this.invoke('set', {
                 'active': false,
                 'here': false
+            }, {
+                silent: true
             });
 
-            if (item) {
-                var breadcrumbs = this._getBreadcrumb(page.name);
 
-                _.invoke(breadcrumbs, 'set', {
+            if (item) {
+                var models = item.getBreadcrumbs();
+
+                _.invoke(models, 'set', {
                     'active': true
                 });
 
                 item.set('here', true);
+                this.trigger('changed');
             }
-            // console.log('root', this.getRoot(item));
-            // console.log('tree', this.getTree(this.getRoot(item)));
-
         },
 
         getCurrent: function () {
@@ -53,101 +134,7 @@ define(function (require) {
             });
 
             return current;
-        },
-
-        getRoot: function (node) {
-            var parent = this.getParent(node);
-
-            if (!parent) {
-                return node;
-            } else {
-                return this.getRoot(parent);
-            }
-        },
-
-        getParent: function (node) {
-            var parent, parentName;
-
-            if (node) {
-                parentName = node.get('parentName');
-
-                parent = this.findWhere({
-                    'name': parentName
-                });
-            }
-
-            return parent;
-        },
-
-        getChildrens: function (node) {
-            var name, childrens = [];
-
-            if (node) {
-                name = node.get('name');
-                childrens = this.where({
-                    'parentName': name
-                });
-            }
-            // console.log('getChildrens', arguments, name, childrens, this.toJSON());
-
-            return childrens;
-
-        },
-
-        getTree: function (start) {
-            if(!start) return;
-            var node = start.toJSON();
-            node.childrens = [];
-            var childrens = this.getChildrens(start);
-
-            if (childrens && childrens.length > 0) {
-
-                node.childrens = _.map(childrens, function (children) {
-                    return this.getTree(children);
-                }, this);
-
-            }
-
-            // console.log('getTree', node, arguments, childrens);
-            return node;
-        },
-
-        getBreadcrumbs: function (end) {
-            var items = [];
-            var models = false;
-
-            if (end) {
-                var endName = end.get('name');
-                models = this._getBreadcrumb(endName);
-            }
-
-            if (models) {
-                items = _.map(models, function (model) {
-                    return model.toJSON();
-                });
-            }
-
-            return items;
-        },
-
-        _getBreadcrumb: function (endName, items) {
-            items = items || [];
-            var item = this.findWhere({
-                'name': endName
-            });
-
-            if (item) {
-                items.push(item);
-                var parentName = item.get('parentName');
-
-                if (parentName) {
-                    return this._getBreadcrumb(parentName, items);
-                }
-            }
-
-            return items.reverse();
         }
-
 
     });
 

@@ -4,39 +4,14 @@ define(function (require) {
     var _ = require('underscore');
     var mediator = require('core/mediator');
     var Backbone = require('backbone');
+    var structure = require('models/structure');
 
     var App = function (options) {
         options || (options = {});
-        var name = options.name || 'App';
-        var pages = [];
-        var apps = [];
-        var slug;
+        this._name = options.name || 'App';
+        this._slug = options.slug || '';
 
-        this.getApps = function () {
-            return apps;
-        };
-
-        this.getPages = function () {
-            return pages;
-        };
-
-        this.getName = function () {
-            return name;
-        };
-
-        this.getSlug = function () {
-            return slug;
-        };
-
-        this.setSlug = function (newSlug) {
-            slug = newSlug;
-        };
-
-        if (options.slug || options.slug === '') {
-            this.setSlug(options.slug);
-        }
-        this.addApps(options.apps);
-        this.addPages(options.pages, options.parentPage);
+        this.addPages(options.pages);
         this.initialize.apply(this);
     };
 
@@ -44,47 +19,18 @@ define(function (require) {
     _.extend(App.prototype, {
 
         initialize: function () {
-            console.log('init ' + this, this.getPages());
+            console.log('init ' + this);
         },
 
         toString: function () {
-            return this.getName();
-        },
-
-        addApp: function (app) {
-            var apps = this.getApps();
-            app = this.setAppSlug(app);
-            apps.push(app);
-        },
-
-        setAppSlug: function(app){
-            app.config.slug = app.slug ? app.slug : app.config.slug;
-            app.config.slug = this.getSlug() + '/' + app.config.slug;
-            return app;
-        },
-
-        addApps: function (apps) {
-            _.each(apps, this.addApp, this);
-        },
-
-        registerApp: function (app) {
-            if(app.parentPage){
-                app.config.parentPage = app.parentPage;
-            }
-            var a = new App(app.config);
-            a.start();
-        },
-
-        registerApps: function () {
-            _.each(this.getApps(), this.registerApp, this);
+            return this._name;
         },
 
         addPage: function (page, parentName) {
-            var pages = this.getPages();
-            page.parentName = parentName;
-            page.appName = this.getName();
+            page.appName = this._name;
+            page.parentName = (parentName || 'root');
 
-            pages.push(page);
+            structure.add(_.omit(page, 'pages'));
 
             if (_.isArray(page.pages)) {
                 this.addPages(page.pages, page.name);
@@ -97,44 +43,45 @@ define(function (require) {
             }, this);
         },
 
-        registerPage: function (page) {
-            page.route = '/' + this.getSlug() + this.calulatePageRoute(page.name, '');
-            mediator.trigger('page:register', page);
-        },
-
-        registerPages: function () {
-            _.each(this.getPages(), this.registerPage, this);
-        },
-
-        calulatePageRoute: function (name, route) {
-            var page = this.findPageByName(name);
-
-            if (page && page.slug) {
-                route = page.slug + route;
-                route = '/' + route;
-            }
-
-            if (page && page.parentName) {
-                return this.calulatePageRoute(page.parentName, route);
-            } else {
-                return route;
+        registerPageRoute: function (page) {
+            var route = this.calulatePageRoute(page);
+            if (route !== false) {
+                page.set('route', '/' + this._slug + route);
+                mediator.trigger('page:register', page.toJSON());
             }
         },
 
-        findPageByName: function (name) {
-            var pages = this.getPages();
-
-            var page = _.find(pages, function (page) {
-                return page.name === name;
-            });
-
-            return page;
+        registerPagesRoutes: function () {
+            structure
+                .chain()
+                .filter(function (page) {
+                    return this._name === page.get('appName');
+                }, this)
+                .each(this.registerPageRoute, this);
         },
+
+        calulatePageRoute: function (page) {
+            var route = false;
+
+            if (page && page.has('slug')) {
+                var models = page.getBreadcrumbs();
+
+                route = _.reduce(models, function (memo, model) {
+                    var slug = model.get('slug');
+                    if (slug) {
+                        memo = memo + '/' + slug;
+                    }
+                    return memo;
+                }, '');
+            }
+
+            return route;
+        },
+
 
         start: function () {
             console.log('start ' + this, this);
-            this.registerPages();
-            this.registerApps();
+            this.registerPagesRoutes();
             return this;
         }
 

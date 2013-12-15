@@ -11,7 +11,7 @@ define(function (require) {
         
         initialize: function (options) {
             this.template = options.outerTpl;
-            this.listenTo(this.collection, 'add remove change', this.render);
+            this.listenTo(this.collection, 'add remove changed', this.render);
         },
         
         setOuterTpl: function(tmpl){
@@ -24,11 +24,7 @@ define(function (require) {
                 var data = {};
                 if (this.options.parentName) {
                     var models = this.collection.filter(function (model) {
-                        if(this.options.parentName === 'root'){
-                            return !model.get('parentName');
-                        }else{
                             return model.get('parentName') === this.options.parentName;
-                        }
                     }, this);
                     data.items = _.map(models, function (model) {
                         return model.toJSON();
