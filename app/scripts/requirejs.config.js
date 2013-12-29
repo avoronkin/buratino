@@ -1,14 +1,20 @@
 /*global require*/
 'use strict';
+var deps;
+
+ if (window.mochaPhantomJS || window.mocha) {
+    deps = ['../../tests/specs'];
+ } else {
+     deps = ['init'];
+ }
+
 
 require.config({
-    deps: [
-        'init'
-    ],
+    deps: deps,
     shim: {
         // underscore: {
         //     exports: '_',
-       // },
+        // },
         // handlebars: {
         //     exports: 'Handlebars'
         // },
@@ -21,17 +27,14 @@ require.config({
         },
         history: {
             exports: 'History'
-        },
-        // jquery: {
-        //     exports: 'jQuery'
-        // }
+        }
     },
     paths: {
         text: '../bower_components/requirejs-text/text',
         jquery: '../bower_components/jquery/jquery',
         backbone: '../bower_components/backbone/backbone',
         underscore: '../bower_components/lodash/dist/lodash',
-//        underscore: '../bower_components/underscore/underscore',
+        //        underscore: '../bower_components/underscore/underscore',
         history: '../bower_components/history.js/scripts/bundled/html4+html5/native.history',
         crossroads: '../bower_components/crossroads.js/dist/crossroads',
         signals: '../bower_components/js-signals/dist/signals',
@@ -58,5 +61,8 @@ require.config({
             '_': 'underscore',
             '$': 'jquery'
         },
+        '/tests': {
+            'init': '../../tests/init'
+        }
     }
 });

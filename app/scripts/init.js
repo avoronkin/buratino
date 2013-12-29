@@ -1,6 +1,5 @@
-'use strict';
-
-define(function (require) {
+define(function(require){
+   console.log('main init')
     var structure = require('models/structure');
     var App = require('core/App');
     var Router = require('core/Router');
@@ -44,14 +43,15 @@ define(function (require) {
     });
 
 
-    var mainAppConfig = require('apps/main/config');
-    var mainApp = new App(mainAppConfig);
-    mainApp.start();
+//     var mainAppConfig = require('apps/main/config');
+//     var mainApp = new App(mainAppConfig);
+//     mainApp.start();
 
-    var testAppConfig = require('apps/test/config');
-    var testApp = new App(testAppConfig);
-    testApp.start();
+//     var testAppConfig = require('apps/test/config');
+//     var testApp = new App(testAppConfig);
+//     testApp.start();
 
 
     router.start();
+
 });

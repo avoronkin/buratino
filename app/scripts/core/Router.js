@@ -6,23 +6,23 @@ define(function (require) {
     var _ = require('underscore');
     var mediator = require('./mediator');
 
-    var Router = function (opt) {
-        var self = this;
+    var Router = function () {
         this._routes = {};
-        this._mediator = mediator;
-
-        this._mediator.on('page:register', function (page) {
-            self.route(page.name, page.route, function (routeParams) {
-                page.routeParams = routeParams;
-                self._mediator.trigger('page:change', page );
-                self._mediator.trigger('title:change', page.title);
-
-            });
-
-        });
+        this.initialize.apply();
+        mediator.on('page:registerRoute', this.onPageRegisterRoute, this);
     };
 
     _.extend(Router.prototype, {
+        initialize: function () {},
+
+        onPageRegisterRoute: function (page) {
+            this.route(page.name, page.route, function (routeParams) {
+                page.routeParams = routeParams;
+                mediator.trigger('page:change', page);
+                mediator.trigger('title:change', page.title);
+
+            });
+        },
 
         start: function () {
             var self = this;
@@ -33,7 +33,7 @@ define(function (require) {
                 crossroads.parse(self._getStatePath());
             });
 
-            this._mediator.trigger('router:start');
+            mediator.trigger('router:start');
         },
 
         route: function (name, pattern, handler, priority) {

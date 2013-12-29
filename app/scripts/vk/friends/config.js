@@ -7,8 +7,8 @@ define(function (require) {
     var MainLayout = require('layouts/main/View');
 
     return {
-        name: 'TestApp',
-        slug: 'app1',
+        name: 'friends',
+        slug: 'friends',
         pages: [{
             slug: '',
             name: 'level1',

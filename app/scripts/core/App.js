@@ -47,7 +47,7 @@ define(function (require) {
             var route = this.calulatePageRoute(page);
             if (route !== false) {
                 page.set('route', '/' + this._slug + route);
-                mediator.trigger('page:register', page.toJSON());
+                mediator.trigger('page:registerRoute', page.toJSON());
             }
         },
 
