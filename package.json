@@ -1,0 +1,32 @@
+{
+  "name": "backbone.app",
+  "version": "0.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "underscore": "~1.6.0",
+    "backbone.model.tree.mixin": "0.0.4",
+    "backbone": "~1.1.2",
+    "jquery": "~2.1.0",
+    "crossroads": "~0.12.0",
+    "nor-history.js": "git://github.com/Sendanor/nor-history.js",
+    "connect": "~2.14.3",
+    "node-underscorify": "0.0.7"
+  },
+  "devDependencies": {
+    "gulp": "~3.5.2",
+    "gulp-browserify": "~0.4.6",
+    "express": "~3.4.8",
+    "gulp-watch": "~0.5.0",
+    "gulp-util": "~2.2.14",
+    "gulp-clean": "~0.2.4",
+    "gulp-run-sequence": "~0.3.2",
+    "jstify": "~0.1.3",
+    "gulp-rename": "~1.2.0"
+  }
+}
