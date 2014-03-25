@@ -1,0 +1,12 @@
+<% if(items && items.length){%>
+<ol class="breadcrumb">
+    <% _.each(items, function(item){%>
+    <% if(item.here){%>
+        <li class="active"><%= item.name %></li>
+    <%}else{%>
+    <li><a href="<%= item.route %>"><%= item.name %></a></li> 
+    <%}%>
+    <%})%>
+</ol>
+
+<%}%>
