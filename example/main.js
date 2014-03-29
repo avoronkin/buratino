@@ -5,6 +5,7 @@ var Structure = require('../src/Structure');
 var App = require('../src/App.js');
 var mediator = require('../src/mediator.js');
 var TopMenu = require('./views/topMenu/TopMenu');
+var TreeMenu = require('./views/treeMenu/Tree');
 var TwoColumn = require('./views/layouts/2column/2column');
 var Breadcrumbs = require('./views/breadcrumbs/Breadcrumbs');
 
@@ -21,6 +22,12 @@ var TwoColumnLayout = {
             '#menu': {
                 constructor: TopMenu,
                 options: {
+                    collection: structure 
+                }
+            },
+            '#tree': {
+                constructor: TreeMenu,
+                options:{
                     collection: structure 
                 }
             },
@@ -149,8 +156,8 @@ $(document).ready(function () {
 
 });
 
-var topMenu = new TopMenu({
-    structure: structure
-});
+// var topMenu = new TopMenu({
+//     structure: structure
+// });
 
-console.log('main test', page, page.getPatch(), structure.toJSON(), mainApp);
+// console.log('main test', page, page.getPatch(), structure.toJSON(), mainApp);
