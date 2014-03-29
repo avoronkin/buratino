@@ -12,11 +12,15 @@ gulp.task('scripts', function () {
     }).pipe(browserify({
         transform: ['jstify'],
         shim: {
+            buratino: {
+                path: './src/index.js',
+                exports: null
+            }
         },
         debug: false
     }))
-    .pipe(rename("build.js"))
-    .pipe(gulp.dest('./example/'));
+        .pipe(rename("build.js"))
+        .pipe(gulp.dest('./example/'));
 });
 
 gulp.task('default', ['build'], function () {

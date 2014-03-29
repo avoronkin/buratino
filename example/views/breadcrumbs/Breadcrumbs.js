@@ -1,4 +1,4 @@
-var View = require('../View');
+var View = require('buratino').Views.View;
 var template = require('./breadcrumbs.html');
 var _ = require('underscore');
 

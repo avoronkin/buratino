@@ -34,7 +34,7 @@ var Structure = Backbone.Collection.extend({
             item.set('here', true);
             this.trigger('changed');
         }
-        console.log('on page change', page, this)
+        console.log('on page change', models);
     },
 
     getCurrent: function () {

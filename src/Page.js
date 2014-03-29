@@ -4,6 +4,10 @@ var _ = require('underscore');
 
 
 var Page = Backbone.Model.extend(_.extend(treeModelMixin, {
+    nodeId: 'cid',
+
+    nodeParentId: 'parentCid',
+
     initialize: function () {
         this.set('cid', this.cid);
     },

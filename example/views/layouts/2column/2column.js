@@ -1,4 +1,4 @@
-var Layout = require('../../LayoutView');
+var Layout = require('buratino').Views.Layout;
 var template = require('./2column.html');
 
 
