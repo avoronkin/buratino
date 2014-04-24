@@ -1,13 +1,15 @@
+'use strict';
+
 var Backbone = require('backbone');
 var mediator = require('./mediator');
 var _ = require('underscore');
-var Page = require('./Page');
+var Activity = require('./Activity');
 
 var Structure = Backbone.Collection.extend({
-    model: Page,
+    model: Activity,
 
     constructor: function () {
-        mediator.on('page:change', this.onPageChange, this);
+        mediator.on('activity:start', this.onPageChange, this);
         Backbone.Collection.apply(this, arguments);
     },
 
@@ -34,7 +36,6 @@ var Structure = Backbone.Collection.extend({
             item.set('here', true);
             this.trigger('changed');
         }
-        console.log('on page change', models);
     },
 
     getCurrent: function () {
