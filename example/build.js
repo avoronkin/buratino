@@ -1,4 +1,7 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
+var _ = require('underscore');
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -23,19 +26,19 @@ var TwoColumnLayout = {
             '#menu': {
                 constructor: TopMenu,
                 options: {
-                    collection: structure 
+                    collection: structure
                 }
             },
             '#tree': {
                 constructor: TreeMenu,
-                options:{
-                    collection: structure 
+                options: {
+                    collection: structure
                 }
             },
             '#breadcrumbs': {
                 constructor: Breadcrumbs,
-                options:{
-                    collection: structure 
+                options: {
+                    collection: structure
                 }
             }
         }
@@ -47,20 +50,23 @@ var mainApp = new App({
     name: 'mainApp',
     slug: '',
     structure: structure,
-    pages: [{
+    activities: [{
         name: 'home',
         main: true,
+        onStart: function(){
+            console.log('home started') 
+        },
         layout: TwoColumnLayout,
         slug: ''
     }, {
         name: 'level1',
         slug: 'level1',
         layout: TwoColumnLayout,
-        pages: [{
+        activities: [{
             name: 'level2',
             layout: TwoColumnLayout,
             slug: 'level2',
-            pages: [{
+            activities: [{
                 name: 'level3',
                 layout: TwoColumnLayout,
                 slug: 'level3'
@@ -76,16 +82,16 @@ var subApp = new App({
 
 mainApp.mount('sub', subApp);
 
-subApp.addPages([{
+subApp.addActivities([{
     name: 'subAppMainPage',
     slug: '',
     layout: TwoColumnLayout,
     main: true,
-    pages: [{
+    activities: [{
         name: 'test2',
         layout: TwoColumnLayout,
         slug: 'test2',
-        pages: [{
+        activities: [{
             name: 'test3',
             layout: TwoColumnLayout,
             slug: 'test3'
@@ -100,16 +106,16 @@ var subApp2 = new App({
 
 subApp.mount('sub2', subApp2);
 
-subApp2.addPages([{
+subApp2.addActivities([{
     name: 'sub app2 home page',
     layout: TwoColumnLayout,
     slug: '',
     main: true,
-    pages: [{
+    activities: [{
         name: 'level2',
         layout: TwoColumnLayout,
         slug: 'level2',
-        pages: [{
+        activities: [{
             name: 'level33',
             layout: TwoColumnLayout,
             slug: 'level3'
@@ -117,17 +123,13 @@ subApp2.addPages([{
     }]
 }]);
 
-mainApp.start();
-var page = structure.find(function (model) {
-    return model.get('name') === 'level3'
-});
 
 $(document).ready(function () {
 
     var layout;
     var $el = $('#main');
 
-    mediator.on('page:change', function (page) {
+    mediator.on('activity:start', function (page) {
 
         if (layout && layout.remove) {
             layout.remove();
@@ -138,32 +140,32 @@ $(document).ready(function () {
 
         layout = new Constructor(options);
         layout.setElement($el).render();
-        console.log('page:change', page, layout, $el);
+        var onStart = page.get('onStart');
+        if (_.isFunction(onStart)) {
+            onStart();
+        }
+        console.log('activity:start', page, layout, $el);
+
     });
 
     mediator.on('router:start', function () {
-        console.log("ready!", router);
-        $('body')
-            .on('click', 'a[href^="/"]', function (event) {
-                if (!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
-                    var path = $(event.currentTarget)
-                        .attr('href');
-                    event.preventDefault();
-                    router.goToUrl(path);
-                }
-            });
+
+        $('body').on('click', 'a[href^="/"]', function (event) {
+            if (!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+                var path = $(event.currentTarget)
+                    .attr('href');
+                event.preventDefault();
+                router.goToUrl(path);
+            }
+        });
     });
     router.start();
 
 });
 
-// var topMenu = new TopMenu({
-//     structure: structure
-// });
+mainApp.start();
 
-// console.log('main test', page, page.getPatch(), structure.toJSON(), mainApp);
-
-},{"../src/App.js":21,"../src/Router":23,"../src/Structure":24,"../src/mediator.js":27,"./views/breadcrumbs/Breadcrumbs":2,"./views/layouts/2column/2column":5,"./views/topMenu/TopMenu":6,"./views/treeMenu/Tree":10,"backbone":15,"jquery":18}],2:[function(require,module,exports){
+},{"../src/App.js":22,"../src/Router":23,"../src/Structure":24,"../src/mediator.js":27,"./views/breadcrumbs/Breadcrumbs":2,"./views/layouts/2column/2column":5,"./views/topMenu/TopMenu":6,"./views/treeMenu/Tree":10,"backbone":15,"jquery":18,"underscore":20}],2:[function(require,module,exports){
 var View = require('buratino').Views.View;
 var template = require('./breadcrumbs.html');
 var _ = require('underscore');
@@ -359,7 +361,7 @@ module.exports = ListView.extend({
 
     initialize: function (options) {
         this.options = options;
-        this.listenTo(this.collection, 'add remove reset', this.render);
+        this.listenTo(this.collection, 'add remove reset change', this.render);
     },
 
     getItems: function () {
@@ -15001,124 +15003,14 @@ return jQuery;
 }).call(this);
 
 },{}],21:[function(require,module,exports){
-var _ = require('underscore');
-var mediator = require('./mediator');
-var Page = require('./Page');
-var Backbone = require('backbone');
+'use strict';
 
-var App = function (options) {
-    options = options || {};
-    this._name = options.name || 'App';
-    this._slug = options.slug || '';
-    this._originalSlug = this._slug;
-    this._parentCid = 'root';
-    this._apps = [];
-    this.structure = options.structure;
-    this.addPages(options.pages || [], this._parentCid);
-};
-
-
-_.extend(App.prototype, {
-
-    mount: function (slug, app) {
-        this._apps.push(app);
-        this._originalSlug = slug;
-        app._slug = this._slug + '/' + slug;
-        app._parentCid = this._cid;
-    },
-
-    toString: function () {
-        return this._name;
-    },
-
-    addPage: function (page, parentCid) {
-        page.appName = this._name;
-        page.parentCid = (parentCid || this._parentCid);
-
-        var pageModel = this.structure.add(_.omit(page, 'pages'));
-
-        // console.log('main page detected', page.name, this._slug, this._originalSlug);
-        if (!pageModel.get('slug')) {
-            this._cid = pageModel.cid;
-            pageModel.set('slug', this._originalSlug)
-        }
-
-        if (_.isArray(page.pages)) {
-            this.addPages(page.pages, pageModel.get('cid'));
-        }
-    },
-
-    addPages: function (pages, parentCid) {
-        _.each(pages, function (page) {
-            this.addPage(page, parentCid);
-        }, this);
-    },
-
-    setPageRoute: function (page) {
-        var route = this.calulatePageRoute(page);
-
-        // console.log('add page', this._slug, route);
-        if (route !== false) {
-            route = this._slug + route;
-            route = route ? route : '/';
-            page.set('route', route);
-        }
-        mediator.trigger('page:start', page);
-    },
-
-    setPagesRoutes: function () {
-        this.structure
-            .chain()
-            .filter(function (page) {
-                return this._name === page.get('appName');
-            }, this)
-            .each(this.setPageRoute, this);
-    },
-
-    calulatePageRoute: function (page) {
-        var route = false;
-
-        if (page && page.has('slug')) {
-            var models = page.getPatch();
-
-            route = _.reduce(models, function (memo, model) {
-                var slug = model.get('slug');
-                if (slug) {
-                    memo = memo + '/' + slug;
-                }
-                return memo;
-            }, '');
-        }
-
-        return route;
-    },
-
-    startSubApps: function () {
-        _(this._apps).invoke('start');
-    },
-
-    start: function () {
-        // console.log('start ' + this, this);
-
-        this.setPagesRoutes();
-        this.startSubApps();
-
-        return this;
-    }
-
-});
-
-App.extend = Backbone.Model.extend;
-
-module.exports = App;
-
-},{"./Page":22,"./mediator":27,"backbone":15,"underscore":20}],22:[function(require,module,exports){
 var Backbone = require('backbone');
 var treeModelMixin = require('backbone.model.tree.mixin');
 var _ = require('underscore');
 
 
-var Page = Backbone.Model.extend(_.extend(treeModelMixin, {
+var Activity = Backbone.Model.extend(_.extend(treeModelMixin, {
     nodeId: 'cid',
 
     nodeParentId: 'parentCid',
@@ -15138,83 +15030,197 @@ var Page = Backbone.Model.extend(_.extend(treeModelMixin, {
     }
 }));
 
-module.exports = Page;
+module.exports = Activity;
 
-},{"backbone":15,"backbone.model.tree.mixin":14,"underscore":20}],23:[function(require,module,exports){
-    var crossroads = require('crossroads');
-    require('nor-history.js');
-    var _ = require('underscore');
-    var mediator = require('./mediator');
+},{"backbone":15,"backbone.model.tree.mixin":14,"underscore":20}],22:[function(require,module,exports){
+'use strict';
 
-    var Router = function () {
-        this._routes = {};
-        this.initialize.apply();
-        mediator.on('page:start', this.registerRoute, this);
-    };
+var _ = require('underscore');
+var mediator = require('./mediator');
+// var Activity = require('./Activity');
+var Backbone = require('backbone');
 
-    _.extend(Router.prototype, {
-        initialize: function () {},
+var App = function (options) {
+    options = options || {};
+    this._name = options.name || 'App';
+    this._slug = options.slug || '';
+    this._originalSlug = this._slug;
+    this._parentCid = 'root';
+    this._apps = [];
+    this.structure = options.structure;
+    this.addActivities(options.activities || [], this._parentCid);
+};
 
-        registerRoute: function (page) {
-            this.route(page.get('name'), page.get('route'), function (routeParams) {
-                page.routeParams = routeParams;
-                mediator.trigger('page:change', page);
-            });
-        },
 
-        start: function () {
-            var self = this;
-            crossroads.normalizeFn = crossroads.NORM_AS_OBJECT;
-            crossroads.parse(this._getStatePath());
+_.extend(App.prototype, {
 
-            History.Adapter.bind(window, 'statechange', function () {
-                crossroads.parse(self._getStatePath());
-            });
+    mount: function (slug, app) {
+        this._apps.push(app);
+        this._originalSlug = slug;
+        app._slug = this._slug + '/' + slug;
+        app._parentCid = this._cid;
+    },
 
-            mediator.trigger('router:start');
-        },
+    toString: function () {
+        return this._name;
+    },
 
-        route: function (name, pattern, handler, priority) {
-            this._routes[name] = this._routes[name] || {};
-            this._routes[name] = crossroads.addRoute(pattern, handler, priority);
-            return this._routes[name];
-        },
+    addActivity: function (activity, parentCid) {
+        activity.appName = this._name;
+        activity.parentCid = (parentCid || this._parentCid);
 
-        _getStatePath: function () {
-            var State = History.getState();
-            var path = State.url.replace(location.origin, '');
-            return path;
-        },
+        var activityModel = this.structure.add(_.omit(activity, 'activities'));
 
-        url: function (name, replacements) {
-            return '/' + this._routes[name].interpolate(replacements);
-        },
-
-        navigate: function (name, replacements) {
-            var path = this.url(name, replacements);
-            this.goToUrl(path);
-        },
-
-        goToUrl: function (path) {
-            History.pushState(null, null, path);
+        if (!activityModel.get('slug')) {
+            this._cid = activityModel.cid;
+            activityModel.set('slug', this._originalSlug)
         }
 
-    });
+        if (_.isArray(activity.activities)) {
+            this.addActivities(activity.activities, activityModel.get('cid'));
+        }
+    },
+
+    addActivities: function (activities, parentCid) {
+        _.each(activities, function (activity) {
+            this.addActivity(activity, parentCid);
+        }, this);
+    },
+
+    setActivityRoute: function (activity) {
+        var route = this.calulateActivityRoute(activity);
+
+        if (route !== false) {
+            route = this._slug + route;
+            route = route ? route : '/';
+            activity.set('route', route);
+
+            mediator.trigger('route:register', activity);
+        }
+    },
+
+    setActivitiesRoutes: function () {
+        this.structure
+            .chain()
+            .filter(function (activity) {
+                return this._name === activity.get('appName');
+            }, this)
+            .each(this.setActivityRoute, this);
+    },
+
+    calulateActivityRoute: function (activity) {
+        var route = false;
+
+        if (activity && activity.has('slug')) {
+            var models = activity.getPatch();
+
+            route = _.reduce(models, function (memo, model) {
+                var slug = model.get('slug');
+                if (slug) {
+                    memo = memo + '/' + slug;
+                }
+                return memo;
+            }, '');
+        }
+
+        return route;
+    },
+
+    startSubApps: function () {
+        _(this._apps).invoke('start');
+    },
+
+    start: function () {
+        this.setActivitiesRoutes();
+        this.startSubApps();
+
+        return this;
+    }
+
+});
+
+App.extend = Backbone.Model.extend;
+
+module.exports = App;
+
+},{"./mediator":27,"backbone":15,"underscore":20}],23:[function(require,module,exports){
+'use strict';
+var crossroads = require('crossroads');
+require('nor-history.js');
+var _ = require('underscore');
+var mediator = require('./mediator');
+
+var Router = function () {
+    this._routes = {};
+    this.initialize.apply();
+    mediator.on('route:register', this.registerRoute, this);
+};
+
+_.extend(Router.prototype, {
+    initialize: function () {},
+
+    registerRoute: function (activity) {
+        this.route(activity.get('name'), activity.get('route'), function (routeParams) {
+            activity.params = routeParams;
+            mediator.trigger('activity:start', activity);
+        });
+    },
+
+    start: function () {
+        var self = this;
+        crossroads.normalizeFn = crossroads.NORM_AS_OBJECT;
+        crossroads.parse(this._getStatePath());
+
+        History.Adapter.bind(window, 'statechange', function () {
+            crossroads.parse(self._getStatePath());
+        });
+
+        mediator.trigger('router:start');
+    },
+
+    route: function (name, pattern, handler, priority) {
+        // this._routes[name] = this._routes[name] || {};
+        this._routes[name] = crossroads.addRoute(pattern, handler, priority);
+        return this._routes[name];
+    },
+
+    _getStatePath: function () {
+        var State = History.getState();
+        var path = State.url.replace(location.origin, '');
+        return path;
+    },
+
+    url: function (name, replacements) {
+        return '/' + this._routes[name].interpolate(replacements);
+    },
+
+    navigate: function (name, replacements) {
+        var path = this.url(name, replacements);
+        this.goToUrl(path);
+    },
+
+    goToUrl: function (path) {
+        History.pushState(null, null, path);
+    }
+
+});
 
 
-    module.exports = Router;
+module.exports = Router;
 
 },{"./mediator":27,"crossroads":16,"nor-history.js":19,"underscore":20}],24:[function(require,module,exports){
+'use strict';
+
 var Backbone = require('backbone');
 var mediator = require('./mediator');
 var _ = require('underscore');
-var Page = require('./Page');
+var Activity = require('./Activity');
 
 var Structure = Backbone.Collection.extend({
-    model: Page,
+    model: Activity,
 
     constructor: function () {
-        mediator.on('page:change', this.onPageChange, this);
+        mediator.on('activity:start', this.onPageChange, this);
         Backbone.Collection.apply(this, arguments);
     },
 
@@ -15241,7 +15247,6 @@ var Structure = Backbone.Collection.extend({
             item.set('here', true);
             this.trigger('changed');
         }
-        console.log('on page change', models);
     },
 
     getCurrent: function () {
@@ -15262,14 +15267,14 @@ var Structure = Backbone.Collection.extend({
 
 module.exports = Structure;
 
-},{"./Page":22,"./mediator":27,"backbone":15,"underscore":20}],"buratino":[function(require,module,exports){
+},{"./Activity":21,"./mediator":27,"backbone":15,"underscore":20}],"buratino":[function(require,module,exports){
 module.exports=require('2u/BxZ');
 },{}],"2u/BxZ":[function(require,module,exports){
 (function (global){
 (function browserifyShim(module, define) {
 var App = require('./App');
 var mediator = require('./mediator');
-var Page = require('./Page');
+var Activity = require('./Activity');
 var Router = require('./Router');
 var Structure = require('./Structure');
 
@@ -15280,7 +15285,7 @@ var List = require('./views/ListView');
 module.exports = {
     App: App,
     Structure: Structure,
-    Page: Page,
+    Activity: Activity,
     Router: Router,
     mediator: mediator,
     Views: {
@@ -15293,7 +15298,7 @@ module.exports = {
 }).call(global, module, undefined);
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./App":21,"./Page":22,"./Router":23,"./Structure":24,"./mediator":27,"./views/LayoutView":28,"./views/ListView":29,"./views/View":30}],27:[function(require,module,exports){
+},{"./Activity":21,"./App":22,"./Router":23,"./Structure":24,"./mediator":27,"./views/LayoutView":28,"./views/ListView":29,"./views/View":30}],27:[function(require,module,exports){
 var Backbone = require('backbone');
 var _ = require('underscore');
 
@@ -15315,10 +15320,10 @@ module.exports = View.extend({
     },
 
     createSubView: function (view) {
-        console.log('create', view)
-        if (!view.instance) {
+        //console.log('create', view)
+        //if (!view.instance) {
             view.instance = new view.constructor(view.options);
-        }
+        //}
     },
 
     renderSubViews: function () {

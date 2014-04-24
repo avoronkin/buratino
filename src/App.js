@@ -1,6 +1,8 @@
+'use strict';
+
 var _ = require('underscore');
 var mediator = require('./mediator');
-var Page = require('./Page');
+// var Activity = require('./Activity');
 var Backbone = require('backbone');
 
 var App = function (options) {
@@ -11,7 +13,7 @@ var App = function (options) {
     this._parentCid = 'root';
     this._apps = [];
     this.structure = options.structure;
-    this.addPages(options.pages || [], this._parentCid);
+    this.addActivities(options.activities || [], this._parentCid);
 };
 
 
@@ -28,55 +30,54 @@ _.extend(App.prototype, {
         return this._name;
     },
 
-    addPage: function (page, parentCid) {
-        page.appName = this._name;
-        page.parentCid = (parentCid || this._parentCid);
+    addActivity: function (activity, parentCid) {
+        activity.appName = this._name;
+        activity.parentCid = (parentCid || this._parentCid);
 
-        var pageModel = this.structure.add(_.omit(page, 'pages'));
+        var activityModel = this.structure.add(_.omit(activity, 'activities'));
 
-        // console.log('main page detected', page.name, this._slug, this._originalSlug);
-        if (!pageModel.get('slug')) {
-            this._cid = pageModel.cid;
-            pageModel.set('slug', this._originalSlug)
+        if (!activityModel.get('slug')) {
+            this._cid = activityModel.cid;
+            activityModel.set('slug', this._originalSlug)
         }
 
-        if (_.isArray(page.pages)) {
-            this.addPages(page.pages, pageModel.get('cid'));
+        if (_.isArray(activity.activities)) {
+            this.addActivities(activity.activities, activityModel.get('cid'));
         }
     },
 
-    addPages: function (pages, parentCid) {
-        _.each(pages, function (page) {
-            this.addPage(page, parentCid);
+    addActivities: function (activities, parentCid) {
+        _.each(activities, function (activity) {
+            this.addActivity(activity, parentCid);
         }, this);
     },
 
-    setPageRoute: function (page) {
-        var route = this.calulatePageRoute(page);
+    setActivityRoute: function (activity) {
+        var route = this.calulateActivityRoute(activity);
 
-        // console.log('add page', this._slug, route);
         if (route !== false) {
             route = this._slug + route;
             route = route ? route : '/';
-            page.set('route', route);
+            activity.set('route', route);
+
+            mediator.trigger('route:register', activity);
         }
-        mediator.trigger('page:start', page);
     },
 
-    setPagesRoutes: function () {
+    setActivitiesRoutes: function () {
         this.structure
             .chain()
-            .filter(function (page) {
-                return this._name === page.get('appName');
+            .filter(function (activity) {
+                return this._name === activity.get('appName');
             }, this)
-            .each(this.setPageRoute, this);
+            .each(this.setActivityRoute, this);
     },
 
-    calulatePageRoute: function (page) {
+    calulateActivityRoute: function (activity) {
         var route = false;
 
-        if (page && page.has('slug')) {
-            var models = page.getPatch();
+        if (activity && activity.has('slug')) {
+            var models = activity.getPatch();
 
             route = _.reduce(models, function (memo, model) {
                 var slug = model.get('slug');
@@ -95,9 +96,7 @@ _.extend(App.prototype, {
     },
 
     start: function () {
-        // console.log('start ' + this, this);
-
-        this.setPagesRoutes();
+        this.setActivitiesRoutes();
         this.startSubApps();
 
         return this;

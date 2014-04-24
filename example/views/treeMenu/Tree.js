@@ -10,7 +10,7 @@ module.exports = ListView.extend({
 
     initialize: function (options) {
         this.options = options;
-        this.listenTo(this.collection, 'add remove reset', this.render);
+        this.listenTo(this.collection, 'add remove reset change', this.render);
     },
 
     getItems: function () {

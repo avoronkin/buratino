@@ -1,9 +1,11 @@
+'use strict';
+
 var Backbone = require('backbone');
 var treeModelMixin = require('backbone.model.tree.mixin');
 var _ = require('underscore');
 
 
-var Page = Backbone.Model.extend(_.extend(treeModelMixin, {
+var Activity = Backbone.Model.extend(_.extend(treeModelMixin, {
     nodeId: 'cid',
 
     nodeParentId: 'parentCid',
@@ -23,4 +25,4 @@ var Page = Backbone.Model.extend(_.extend(treeModelMixin, {
     }
 }));
 
-module.exports = Page;
+module.exports = Activity;

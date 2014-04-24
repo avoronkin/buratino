@@ -11,10 +11,10 @@ module.exports = View.extend({
     },
 
     createSubView: function (view) {
-        console.log('create', view)
-        if (!view.instance) {
+        //console.log('create', view)
+        //if (!view.instance) {
             view.instance = new view.constructor(view.options);
-        }
+        //}
     },
 
     renderSubViews: function () {

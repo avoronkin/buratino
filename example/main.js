@@ -1,3 +1,6 @@
+'use strict';
+
+var _ = require('underscore');
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
@@ -22,19 +25,19 @@ var TwoColumnLayout = {
             '#menu': {
                 constructor: TopMenu,
                 options: {
-                    collection: structure 
+                    collection: structure
                 }
             },
             '#tree': {
                 constructor: TreeMenu,
-                options:{
-                    collection: structure 
+                options: {
+                    collection: structure
                 }
             },
             '#breadcrumbs': {
                 constructor: Breadcrumbs,
-                options:{
-                    collection: structure 
+                options: {
+                    collection: structure
                 }
             }
         }
@@ -46,20 +49,23 @@ var mainApp = new App({
     name: 'mainApp',
     slug: '',
     structure: structure,
-    pages: [{
+    activities: [{
         name: 'home',
         main: true,
+        onStart: function(){
+            console.log('home started') 
+        },
         layout: TwoColumnLayout,
         slug: ''
     }, {
         name: 'level1',
         slug: 'level1',
         layout: TwoColumnLayout,
-        pages: [{
+        activities: [{
             name: 'level2',
             layout: TwoColumnLayout,
             slug: 'level2',
-            pages: [{
+            activities: [{
                 name: 'level3',
                 layout: TwoColumnLayout,
                 slug: 'level3'
@@ -75,16 +81,16 @@ var subApp = new App({
 
 mainApp.mount('sub', subApp);
 
-subApp.addPages([{
+subApp.addActivities([{
     name: 'subAppMainPage',
     slug: '',
     layout: TwoColumnLayout,
     main: true,
-    pages: [{
+    activities: [{
         name: 'test2',
         layout: TwoColumnLayout,
         slug: 'test2',
-        pages: [{
+        activities: [{
             name: 'test3',
             layout: TwoColumnLayout,
             slug: 'test3'
@@ -99,16 +105,16 @@ var subApp2 = new App({
 
 subApp.mount('sub2', subApp2);
 
-subApp2.addPages([{
+subApp2.addActivities([{
     name: 'sub app2 home page',
     layout: TwoColumnLayout,
     slug: '',
     main: true,
-    pages: [{
+    activities: [{
         name: 'level2',
         layout: TwoColumnLayout,
         slug: 'level2',
-        pages: [{
+        activities: [{
             name: 'level33',
             layout: TwoColumnLayout,
             slug: 'level3'
@@ -116,17 +122,13 @@ subApp2.addPages([{
     }]
 }]);
 
-mainApp.start();
-var page = structure.find(function (model) {
-    return model.get('name') === 'level3'
-});
 
 $(document).ready(function () {
 
     var layout;
     var $el = $('#main');
 
-    mediator.on('page:change', function (page) {
+    mediator.on('activity:start', function (page) {
 
         if (layout && layout.remove) {
             layout.remove();
@@ -137,27 +139,27 @@ $(document).ready(function () {
 
         layout = new Constructor(options);
         layout.setElement($el).render();
-        console.log('page:change', page, layout, $el);
+        var onStart = page.get('onStart');
+        if (_.isFunction(onStart)) {
+            onStart();
+        }
+        console.log('activity:start', page, layout, $el);
+
     });
 
     mediator.on('router:start', function () {
-        console.log("ready!", router);
-        $('body')
-            .on('click', 'a[href^="/"]', function (event) {
-                if (!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
-                    var path = $(event.currentTarget)
-                        .attr('href');
-                    event.preventDefault();
-                    router.goToUrl(path);
-                }
-            });
+
+        $('body').on('click', 'a[href^="/"]', function (event) {
+            if (!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+                var path = $(event.currentTarget)
+                    .attr('href');
+                event.preventDefault();
+                router.goToUrl(path);
+            }
+        });
     });
     router.start();
 
 });
 
-// var topMenu = new TopMenu({
-//     structure: structure
-// });
-
-// console.log('main test', page, page.getPatch(), structure.toJSON(), mainApp);
+mainApp.start();
