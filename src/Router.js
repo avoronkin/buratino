@@ -1,6 +1,6 @@
 'use strict';
 var crossroads = require('crossroads');
-require('nor-history.js');
+require('../node_modules/history.js/scripts/bundled/html4+html5/native.history.js');
 var _ = require('underscore');
 var mediator = require('./mediator');
 
@@ -25,6 +25,12 @@ _.extend(Router.prototype, {
         crossroads.normalizeFn = crossroads.NORM_AS_OBJECT;
         crossroads.parse(this._getStatePath());
 
+        if(!(window.history && history.pushState)){
+            if(window.location.pathname != '/'){//if no history support, then redirect to hash 
+                window.location.href = '/#' + self._getStatePath();
+            }
+        }
+
         History.Adapter.bind(window, 'statechange', function () {
             crossroads.parse(self._getStatePath());
         });
@@ -33,14 +39,14 @@ _.extend(Router.prototype, {
     },
 
     route: function (name, pattern, handler, priority) {
-        // this._routes[name] = this._routes[name] || {};
         this._routes[name] = crossroads.addRoute(pattern, handler, priority);
         return this._routes[name];
     },
 
     _getStatePath: function () {
         var State = History.getState();
-        var path = State.url.replace(location.origin, '');
+        var path = State.url.replace(window.location.protocol + '//' + window.location.host + '/', '').split('#')
+        path = path[path.length - 1];
         return path;
     },
 

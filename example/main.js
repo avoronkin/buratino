@@ -124,7 +124,7 @@ subApp2.addActivities([{
 
 
 $(document).ready(function () {
-
+console.log('document ready')
     var layout;
     var $el = $('#main');
 
@@ -148,7 +148,7 @@ $(document).ready(function () {
     });
 
     mediator.on('router:start', function () {
-
+console.log('router start')
         $('body').on('click', 'a[href^="/"]', function (event) {
             if (!event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
                 var path = $(event.currentTarget)
