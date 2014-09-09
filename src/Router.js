@@ -51,7 +51,7 @@ _.extend(Router.prototype, {
     },
 
     url: function (name, replacements) {
-        return '/' + this._routes[name].interpolate(replacements);
+        return this._routes[name].interpolate(replacements);
     },
 
     navigate: function (name, replacements) {

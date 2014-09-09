@@ -23,7 +23,7 @@ module.exports = View.extend({
 
     renderSubView: function (view, el) {
         this.createSubView(view);
-        view.instance.setElement(el).render();
+        view.instance.setElement(this.$el.find(el)).render();
     },
 
     removeSubViews: function () {
