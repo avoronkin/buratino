@@ -1,6 +1,6 @@
 'use strict';
 var crossroads = require('crossroads');
-require('nor-history');
+require('nor-history.js');
 var _ = require('underscore');
 var mediator = require('./mediator');
 
