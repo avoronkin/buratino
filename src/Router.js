@@ -14,10 +14,12 @@ _.extend(Router.prototype, {
     initialize: function () {},
 
     registerRoute: function (activity) {
-        this.route(activity.get('name'), activity.get('route'), function (routeParams) {
+        var route = this.route(activity.get('name'), activity.get('route'), function (routeParams) {
             activity.params = routeParams;
             mediator.trigger('activity:start', activity);
         });
+
+        activity.route = route;
     },
 
     start: function () {
@@ -26,7 +28,7 @@ _.extend(Router.prototype, {
         crossroads.parse(this._getStatePath());
 
         if(!(window.history && history.pushState)){
-            if(window.location.pathname != '/'){//if no history support, then redirect to hash 
+            if(window.location.pathname != '/'){//if no history support, then redirect to hash
                 window.location.href = '/#' + self._getStatePath();
             }
         }

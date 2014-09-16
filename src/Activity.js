@@ -6,23 +6,31 @@ var _ = require('underscore');
 
 
 var Activity = Backbone.Model.extend(_.extend(treeModelMixin, {
-    nodeId: 'cid',
+  nodeId: 'cid',
 
-    nodeParentId: 'parentCid',
+  nodeParentId: 'parentCid',
 
-    initialize: function () {
-        this.set('cid', this.cid);
-    },
+  initialize: function() {
+    this.set('cid', this.cid);
+  },
 
-    hasChildren: function () {
-        var cid = this.get('cid');
+  getTitle: function(params) {
+    return _.isFunction(this.get('title')) ? this.get('title')(params) : this.get('title');
+  },
 
-        var children = this.collection.filter(function (model) {
-            return cid === model.get('parentCid');
-        });
+  getUrl: function(params){
+    return this.route.interpolate(params);
+  },
 
-        return !!children.length;
-    }
+  hasChildren: function() {
+    var cid = this.get('cid');
+
+    var children = this.collection.filter(function(model) {
+      return cid === model.get('parentCid');
+    });
+
+    return !!children.length;
+  }
 }));
 
 module.exports = Activity;
