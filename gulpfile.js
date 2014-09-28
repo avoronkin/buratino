@@ -1,8 +1,9 @@
+'use strict';
 var gulp = require('gulp');
-var gutil = require('gulp-util');
+// var gutil = require('gulp-util');
 var browserify = require('gulp-browserify');
 var server = require('./server');
-var watch = require('gulp-watch');
+// var watch = require('gulp-watch');
 var runSequence = require('gulp-run-sequence');
 var rename = require("gulp-rename");
 
@@ -13,13 +14,13 @@ gulp.task('scripts', function () {
         transform: ['jstify'],
         shim: {
             buratino: {
-                path: './src/index.js',
+                path: './node_modules/lib/index.js',
                 exports: null
             }
         },
         debug: false
     }))
-        .pipe(rename("build.js"))
+        .pipe(rename('build.js'))
         .pipe(gulp.dest('./example/'));
 });
 

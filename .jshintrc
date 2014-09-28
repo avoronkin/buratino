@@ -3,7 +3,7 @@
     "browser": true,
     "esnext": true,
     "bitwise": true,
-    "globals": {"require":true,"define":true},
+    "globals": {"require":true,"define":true, "History":true},
     "camelcase": true,
     "curly": true,
     "eqeqeq": true,

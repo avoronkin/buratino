@@ -4,15 +4,15 @@ var _ = require('underscore');
 var Backbone = require('backbone');
 var $ = require('jquery');
 Backbone.$ = $;
-var Structure = require('../src/Structure');
-var App = require('../src/App.js');
-var mediator = require('../src/mediator.js');
+var Structure = require('buratino').Structure;
+var App = require('buratino').App;
+var mediator = require('buratino').mediator;
 var TopMenu = require('./views/topMenu/TopMenu');
 var TreeMenu = require('./views/treeMenu/Tree');
 var TwoColumn = require('./views/layouts/2column/2column');
 var Breadcrumbs = require('./views/breadcrumbs/Breadcrumbs');
 
-var Router = require('../src/Router');
+var Router = require('buratino').Router;
 var router = new Router();
 
 
@@ -53,7 +53,7 @@ var mainApp = new App({
         name: 'home',
         main: true,
         onStart: function(){
-            console.log('home started') 
+            console.log('home started')
         },
         layout: TwoColumnLayout,
         slug: ''

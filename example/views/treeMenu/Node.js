@@ -1,25 +1,25 @@
+'use strict';
+
 var ListView = require('buratino').Views.List;
-var View = require('buratino').Views.View;
 var template = require('./node.html');
 var _ = require('underscore');
-var mediator = require('buratino').mediator;
 
-var Node = ListView.extend({
+var TreeNode = ListView.extend({
     template: template,
-    // events: {
-    //     'click': 'toggleState'
-    // },
     tagName: 'li',
     initialize: function (options) {
         this.options = options;
         this.options.containerSelector = '.children';
-        this.itemView = Node;
+        this.itemView = TreeNode;
         this.model.set('collapsed', false);
-        this.listenTo(this.model, 'change', function (model) {
-            this.render();
-            // console.log('model changed', model.toJSON())
 
-        })
+    },
+
+    // events: {
+    //     'click': 'toggleState'
+    // },
+    modelEvents: {
+      'change': 'render'
     },
 
     toggleState: function (event) {
@@ -47,4 +47,4 @@ var Node = ListView.extend({
     }
 });
 
-module.exports = Node;
+module.exports = TreeNode;

@@ -1,16 +1,20 @@
+'use strict';
+
 var ListView = require('buratino').Views.List;
-var View = require('buratino').Views.View;
-var Node = require('./Node');
+var TreeNode = require('./Node');
 var template = require('./tree.html');
 
 module.exports = ListView.extend({
     template: template,
     containerSelector: '.children',
-    itemView: Node,
+    itemView: TreeNode,
 
     initialize: function (options) {
         this.options = options;
-        this.listenTo(this.collection, 'add remove reset change', this.render);
+    },
+
+    collectionEvents: {
+      'add remove reset change': 'render',
     },
 
     getItems: function () {
